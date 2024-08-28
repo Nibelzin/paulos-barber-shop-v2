@@ -6,7 +6,7 @@ import { Button } from "./ui/button"
 
 const Header = () => {
   return (
-    <header className="flex justify-between border-b px-16 py-3 lg:px-32">
+    <header className="flex justify-between border-b px-8 py-3 md:px-32 xl:px-64">
       <div className="flex items-center gap-4">
         <Button size="sm" className="flex items-center gap-2">
           <FaHome size={18} />
