@@ -8,6 +8,8 @@ import {
 } from "./_components/ui/carousel"
 import BarberCard from "./_components/BarberCard"
 import ServiceCard from "./_components/ServiceCard"
+import Map from "./_components/Map"
+import { FaInstagram, FaWhatsapp } from "react-icons/fa"
 
 const barbers = [
   {
@@ -47,7 +49,7 @@ const carrouselImages = [
 
 export default function Home() {
   return (
-    <div className="bg-man relative h-full bg-slate-50 px-8 md:px-32 xl:px-64">
+    <div className="bg-man relative h-full bg-slate-50 px-8 pt-16 md:px-32 xl:px-64">
       <Image
         src="/bg_man.svg"
         width={900}
@@ -56,7 +58,7 @@ export default function Home() {
         alt="bg man"
       />
       <div className="z-10">
-        <div className="mb-16 flex w-full flex-col items-center gap-16 md:flex-row">
+        <div className="flex w-full flex-col items-center gap-16 md:flex-row">
           <div className="mt-16 flex">
             <Carousel
               opts={{
@@ -99,6 +101,7 @@ export default function Home() {
             </p>
           </div>
         </div>
+        <hr className="my-16" />
         <div className="mb-16 flex w-full flex-col gap-6 xl:flex-row">
           <div className="relative h-fit flex-1 rounded-md border bg-white p-4 drop-shadow">
             <Image
@@ -144,37 +147,78 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <div className="mb-16 space-y-4">
-          <h2 className="text-2xl font-bold">Horário de Funcionamento</h2>
-          <div className="max-w-[700px] space-y-2">
-            <div className="flex justify-between font-bold text-slate-700">
-              <p>Segunda-Feira</p>
-              <p>Fechado</p>
+        <div className="mb-16 flex w-full flex-col gap-6 md:flex-row">
+          <div className="mb-16 flex flex-1 flex-col">
+            <h2 className="mb-4 text-2xl font-bold">
+              Horário de Funcionamento
+            </h2>
+            <div className="space-y-2">
+              <div className="flex justify-between font-bold text-slate-700">
+                <p>Segunda-Feira</p>
+                <p>Fechado</p>
+              </div>
+              <div className="flex justify-between font-bold text-slate-700">
+                <p>Terça-Feira</p>
+                <p>09:00 - 20:00</p>
+              </div>
+              <div className="flex justify-between font-bold text-slate-700">
+                <p>Quarta-Feira</p>
+                <p>09:00 - 20:00</p>
+              </div>
+              <div className="flex justify-between font-bold text-slate-700">
+                <p>Quinta-Feira</p>
+                <p>09:00 - 20:00</p>
+              </div>
+              <div className="flex justify-between font-bold text-slate-700">
+                <p>Sexta-Feira</p>
+                <p>09:00 - 20:00</p>
+              </div>
+              <div className="flex justify-between font-bold text-slate-700">
+                <p>Sábado</p>
+                <p>08:00 - 20:00</p>
+              </div>
+              <div className="flex justify-between font-bold text-slate-700">
+                <p>Domingo</p>
+                <p>08:00 - 15:00</p>
+              </div>
             </div>
-            <div className="flex justify-between font-bold text-slate-700">
-              <p>Terça-Feira</p>
-              <p>09:00 - 20:00</p>
+            <hr className="my-4" />
+            <h2 className="mb-4 text-2xl font-bold">Contato</h2>
+            <div className="mb-4 flex gap-2">
+              <FaWhatsapp size={25} fill="green" />
+              <p className="font-bold text-slate-700">(11) 97654-3210</p>
             </div>
-            <div className="flex justify-between font-bold text-slate-700">
-              <p>Quarta-Feira</p>
-              <p>09:00 - 20:00</p>
+            <div className="flex gap-2">
+              <div>
+                <svg width="0" height="0">
+                  <linearGradient
+                    id="blue-gradient"
+                    x1="100%"
+                    y1="50%"
+                    x2="0%"
+                    y2="0%"
+                  >
+                    <stop stopColor="#833ab4" offset="0%" />
+                    <stop stopColor="#fd1d1d" offset="50%" />
+                    <stop stopColor="#fcb045" offset="100%" />
+                  </linearGradient>
+                </svg>
+                <FaInstagram
+                  size={25}
+                  style={{ fill: "url(#blue-gradient)" }}
+                />
+              </div>
+              <p className="font-bold text-slate-700">@paulosbarbershop</p>
             </div>
-            <div className="flex justify-between font-bold text-slate-700">
-              <p>Quinta-Feira</p>
-              <p>09:00 - 20:00</p>
+          </div>
+          <div className="w-full md:flex-1">
+            <div className="mb-4 h-96 w-full overflow-hidden rounded-md shadow-md md:flex-1">
+              <Map />
             </div>
-            <div className="flex justify-between font-bold text-slate-700">
-              <p>Sexta-Feira</p>
-              <p>09:00 - 20:00</p>
-            </div>
-            <div className="flex justify-between font-bold text-slate-700">
-              <p>Sábado</p>
-              <p>08:00 - 20:00</p>
-            </div>
-            <div className="flex justify-between font-bold text-slate-700">
-              <p>Domingo</p>
-              <p>08:00 - 15:00</p>
-            </div>
+            <h2 className="text-xl font-bold text-slate-700">
+              Av. Ficticia Por Razões, 1345, 01234-10
+            </h2>
+            <h2 className="text-lg font-bold text-slate-700">São Paulo - SP</h2>
           </div>
         </div>
       </div>
