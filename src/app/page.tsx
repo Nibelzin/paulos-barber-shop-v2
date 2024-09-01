@@ -10,6 +10,7 @@ import BarberCard from "./_components/BarberCard"
 import ServiceCard from "./_components/ServiceCard"
 import Map from "./_components/Map"
 import { FaInstagram, FaWhatsapp } from "react-icons/fa"
+import BookingCard from "./_components/BookingCard"
 
 const barbers = [
   {
@@ -58,7 +59,7 @@ export default function Home() {
         alt="bg man"
       />
       <div className="z-10">
-        <div className="flex w-full flex-col items-center gap-16 md:flex-row">
+        <div className="mb-16 flex w-full flex-col items-center gap-16 md:flex-row">
           <div className="mt-16 flex">
             <Carousel
               opts={{
@@ -100,6 +101,10 @@ export default function Home() {
               melhor experiencia em cortes.
             </p>
           </div>
+        </div>
+        <div className="space-y-4">
+          <h2 className="text-2xl font-bold">Próximo Agendamento</h2>
+          <BookingCard />
         </div>
         <hr className="my-16" />
         <div className="mb-16 flex w-full flex-col gap-6 xl:flex-row">
