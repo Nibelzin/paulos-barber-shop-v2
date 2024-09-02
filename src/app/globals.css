@@ -59,6 +59,30 @@
   }
 }
 
+.bg_man::before{
+  content: ' ';
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 0%;
+  width: 900px;
+  height: 900px;
+  opacity: 0.2;
+  background-image: url('/bg_man.svg');
+  background-repeat: no-repeat;
+  background-position: 50% 0;
+  background-size: contain;
+  z-index: 0;
+  animation: parallax linear;
+  animation-timeline: scroll();
+}
+
+@keyframes parallax {
+  to {
+    transform: translateY(500px);
+  }
+}
+
 @layer base {
   * {
     @apply border-border antialiased;

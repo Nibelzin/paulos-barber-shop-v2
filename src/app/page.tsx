@@ -50,14 +50,7 @@ const carrouselImages = [
 
 export default function Home() {
   return (
-    <div className="bg-man relative h-full bg-slate-50 px-8 pt-16 md:px-32 xl:px-64">
-      <Image
-        src="/bg_man.svg"
-        width={900}
-        height={600}
-        className="fixed -right-10 top-80 opacity-20"
-        alt="bg man"
-      />
+    <div className="bg-man bg_man z-0 h-full bg-slate-50 px-8 pt-16 md:px-32 xl:px-64">
       <div className="z-10">
         <div className="mb-16 flex w-full flex-col items-center gap-16 md:flex-row">
           <div className="mt-16 flex">
