@@ -104,7 +104,7 @@ export default function Home() {
         </div>
         <div className="space-y-4">
           <h2 className="text-2xl font-bold">Próximo Agendamento</h2>
-          <BookingCard />
+          <BookingCard page="home" />
         </div>
         <hr className="my-16" />
         <div className="mb-16 flex w-full flex-col gap-6 xl:flex-row">

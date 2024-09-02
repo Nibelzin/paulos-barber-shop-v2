@@ -2,7 +2,13 @@
 
 import { FaHome } from "react-icons/fa"
 import { FaCalendarAlt } from "react-icons/fa"
-import { FaBars, FaChevronDown } from "react-icons/fa6"
+import {
+  FaArrowRightToBracket,
+  FaBars,
+  FaChevronDown,
+  FaMoon,
+  FaUser,
+} from "react-icons/fa6"
 
 import { Avatar, AvatarImage } from "./ui/avatar"
 import { Button } from "./ui/button"
@@ -10,6 +16,13 @@ import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useDetectClickOutside } from "react-detect-click-outside"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu"
 
 const Header = () => {
   const pathName = usePathname()
@@ -23,7 +36,10 @@ const Header = () => {
     setNavbarVisible(false)
   }
 
-  const ref = useDetectClickOutside({ onTriggered: handleMenuClickOutside })
+  const ref = useDetectClickOutside({
+    onTriggered: handleMenuClickOutside,
+    disableTouch: true,
+  })
 
   return (
     <header className="fixed top-0 z-50 w-full">
@@ -60,16 +76,35 @@ const Header = () => {
             </Link>
           </Button>
         </div>
-        <div className="group/configs z-50 flex cursor-pointer items-center gap-2">
-          <FaChevronDown
-            size={10}
-            className="opacity-0 transition-opacity group-hover/configs:opacity-100"
-          />
-          <p className="text-sm font-semibold">Luan Henrique</p>
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-          </Avatar>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <div className="group/configs z-50 flex cursor-pointer items-center gap-2">
+              <FaChevronDown
+                size={10}
+                className="opacity-0 transition-opacity group-hover/configs:opacity-100"
+              />
+              <p className="text-sm font-semibold">Luan Henrique</p>
+              <Avatar>
+                <AvatarImage src="https://github.com/shadcn.png" />
+              </Avatar>
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent sideOffset={18}>
+            <DropdownMenuItem className="gap-2">
+              <FaUser />
+              <p className="font-bold">Meu Perfil</p>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="gap-2">
+              <FaMoon />
+              <p className="font-bold">Dark Mode</p>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="gap-2 text-red-500">
+              <FaArrowRightToBracket />
+              <p className="font-bold">Log Out</p>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <div
         ref={ref}
@@ -78,6 +113,7 @@ const Header = () => {
         <Link
           className="flex items-center gap-2 rounded-md p-3 hover:bg-slate-100"
           href="/"
+          onClick={handleMenuHamburguerClick}
         >
           <FaHome size={18} />
           <p className="font-bold">Home</p>
@@ -86,6 +122,7 @@ const Header = () => {
         <Link
           className="flex items-center gap-2 rounded-md p-3 hover:bg-slate-100"
           href="/bookings"
+          onClick={handleMenuHamburguerClick}
         >
           <FaCalendarAlt size={18} />
           <p className="font-bold">Agendamentos</p>
