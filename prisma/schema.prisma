@@ -18,7 +18,7 @@ model User {
   email     String    @unique
   password  String
   name      String
-  avatarImg String
+  avatarImg String?
   admin     Boolean
   bookings  Booking[]
 }
@@ -35,7 +35,7 @@ model Service {
 model Barber {
   id          Int       @id @default(autoincrement())
   name        String
-  avatarImg   String
+  avatarImg   String?
   description String
   bookings    Booking[]
 }

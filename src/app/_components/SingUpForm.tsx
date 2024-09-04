@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { Button } from "./ui/button"
+import bcrypt from "bcryptjs"
 import {
   Form,
   FormControl,
@@ -45,10 +46,29 @@ const SignUpForm = () => {
     },
   })
 
-  function onSubmit(values: z.infer<typeof signUpFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof signUpFormSchema>) {
+    const hashPassword = await bcrypt.hash(values.password, 10)
+    const user: User = {
+      name: values.username,
+      email: values.email,
+      password: hashPassword,
+      admin: false,
+    }
+    const result = await fetch("/api/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    })
+
+    if (result.ok) {
+      const data = await result.json()
+      console.log(data.message)
+    } else {
+      const data = await result.json()
+      console.log(data.message)
+    }
   }
 
   return (

@@ -1,13 +1,13 @@
 "use client"
 
 import Image from "next/image"
-import { Card, CardContent, CardHeader } from "../_components/ui/card"
-import SignInForm from "../_components/SignInForm"
+import { Card, CardContent, CardHeader } from "../../_components/ui/card"
+import SignInForm from "../../_components/SignInForm"
 import { useState } from "react"
-import { Button } from "../_components/ui/button"
+import { Button } from "../../_components/ui/button"
 import { FaChevronLeft } from "react-icons/fa6"
 import Link from "next/link"
-import SignUpForm from "../_components/SingUpForm"
+import SignUpForm from "../../_components/SingUpForm"
 
 const Login = () => {
   const [signUpMode, setSignUpMode] = useState(false)
