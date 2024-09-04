@@ -1,56 +1,28 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
 import Image from "next/image"
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "../_components/ui/card"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../_components/ui/form"
-import { Input } from "../_components/ui/input"
+import { Card, CardContent, CardHeader } from "../_components/ui/card"
+import SignInForm from "../_components/SignInForm"
+import { useState } from "react"
 import { Button } from "../_components/ui/button"
-
-const formSchema = z.object({
-  username: z
-    .string()
-    .min(2, {
-      message: "O Nome deve conter pelo menos 2 caracteres",
-    })
-    .max(50),
-  email: z.string().email(),
-  password: z.string().min(2).max(50),
-})
+import { FaChevronLeft } from "react-icons/fa6"
+import Link from "next/link"
+import SignUpForm from "../_components/SingUpForm"
 
 const Login = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: "",
-      email: "",
-      password: "",
-    },
-  })
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
-  }
+  const [signUpMode, setSignUpMode] = useState(false)
 
   return (
-    <div className="flex h-full items-center justify-center bg-black">
+    <div className="relative flex h-full flex-col items-center justify-center bg-black">
+      <Button
+        className="absolute left-10 top-10 z-50 rounded-full"
+        variant="outline"
+        size="icon"
+      >
+        <Link href="/">
+          <FaChevronLeft />
+        </Link>
+      </Button>
       <video
         autoPlay
         loop
@@ -60,67 +32,45 @@ const Login = () => {
       >
         <source src="/login_background.mp4" type="video/mp4" />
       </video>
+      <Image
+        src="paulo_logo.svg"
+        width={200}
+        height={20}
+        alt="Paulo's Barbershop Logo"
+        className="z-50 mb-4"
+      />
       <Card className="z-50 w-96">
-        <CardHeader className="">
-          <Image
-            src="paulo_logo.svg"
-            width={200}
-            height={20}
-            style={{
-              filter: "brightness(0) saturate(100%)",
-            }}
-            alt="Paulo's Barbershop Logo"
-          />
+        <CardHeader className="flex justify-between">
+          {signUpMode ? (
+            <div className="space-y-2">
+              <h1 className="text-2xl font-bold">Registrar-se</h1>
+              <div className="flex gap-1 text-sm text-slate-600">
+                <p>Já possui uma conta?</p>
+                <button
+                  className="underline"
+                  onClick={() => setSignUpMode(false)}
+                >
+                  Login
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <h1 className="text-2xl font-bold">Login</h1>
+              <div className="flex gap-1 text-sm text-slate-600">
+                <p>Não possui uma conta?</p>
+                <button
+                  className="underline"
+                  onClick={() => setSignUpMode(true)}
+                >
+                  Registrar-se
+                </button>
+              </div>
+            </div>
+          )}
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="mb-8 space-y-2">
-                <FormField
-                  control={form.control}
-                  name="username"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nome</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Paulo" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="paulo@barber.com" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Senha</FormLabel>
-                      <FormControl>
-                        <Input placeholder="****" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <Button type="submit" className="w-full">
-                Registrar
-              </Button>
-            </form>
-          </Form>
+          {signUpMode ? <SignUpForm /> : <SignInForm />}
         </CardContent>
       </Card>
     </div>
