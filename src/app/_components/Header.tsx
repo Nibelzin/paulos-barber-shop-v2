@@ -9,6 +9,7 @@ import {
   FaMoon,
   FaUser,
 } from "react-icons/fa6"
+import { HiOutlineDotsVertical } from "react-icons/hi"
 
 import { Avatar, AvatarImage } from "./ui/avatar"
 import { Button } from "./ui/button"
@@ -23,13 +24,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu"
+import { signOut, useSession } from "next-auth/react"
 
 const Header = () => {
+  const session = useSession()
+
   const pathName = usePathname()
   const [isNavbarVisible, setNavbarVisible] = useState(false)
 
   const handleMenuHamburguerClick = () => {
     setNavbarVisible(!isNavbarVisible)
+  }
+
+  const handleSignOut = () => {
+    signOut()
   }
 
   const handleMenuClickOutside = () => {
@@ -76,35 +84,68 @@ const Header = () => {
             </Link>
           </Button>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <div className="group/configs z-50 flex cursor-pointer items-center gap-2">
-              <FaChevronDown
-                size={10}
-                className="opacity-0 transition-opacity group-hover/configs:opacity-100"
-              />
-              <p className="text-sm font-semibold">Luan Henrique</p>
-              <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
-              </Avatar>
-            </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent sideOffset={18}>
-            <DropdownMenuItem className="gap-2">
-              <FaUser />
-              <p className="font-bold">Meu Perfil</p>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="gap-2">
-              <FaMoon />
-              <p className="font-bold">Dark Mode</p>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 text-red-500">
-              <FaArrowRightToBracket />
-              <p className="font-bold">Log Out</p>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {session.status === "authenticated" ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger className="" asChild>
+              <div className="group/configs z-50 flex cursor-pointer items-center gap-2">
+                <FaChevronDown
+                  size={10}
+                  className="opacity-0 transition-opacity group-hover/configs:opacity-100"
+                />
+                <p className="text-sm font-semibold">
+                  {session.data?.user?.name}
+                </p>
+                <Avatar>
+                  <AvatarImage src="https://i.pinimg.com/736x/09/21/fc/0921fc87aa989330b8d403014bf4f340.jpg" />
+                </Avatar>
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent sideOffset={18}>
+              <DropdownMenuItem className="gap-2">
+                <FaUser />
+                <p className="font-bold">Meu Perfil</p>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="gap-2">
+                <FaMoon />
+                <p className="font-bold">Dark Mode</p>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="gap-2 text-red-500"
+                onClick={handleSignOut}
+              >
+                <FaArrowRightToBracket />
+                <p className="font-bold">Log Out</p>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <div className="flex items-center gap-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  className="border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                >
+                  <HiOutlineDotsVertical size={24} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent sideOffset={18}>
+                <DropdownMenuItem className="gap-2">
+                  <FaMoon />
+                  <p className="font-bold">Dark Mode</p>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button variant="outline" className="flex gap-2" size="sm" asChild>
+              <Link href="/login">
+                <FaUser />
+                <p>Fazer Login</p>
+              </Link>
+            </Button>
+          </div>
+        )}
       </div>
       <div
         ref={ref}

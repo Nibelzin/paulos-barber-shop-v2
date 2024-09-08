@@ -11,13 +11,20 @@ import {
 import { Input } from "./ui/input"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { signIn } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import Image from "next/image"
 
 const signInFormSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(2),
+  email: z.string().email({ message: "Email inválido" }),
+  password: z.string(),
 })
 
 const SignInForm = () => {
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+
   const form = useForm<z.infer<typeof signInFormSchema>>({
     resolver: zodResolver(signInFormSchema),
     defaultValues: {
@@ -26,10 +33,23 @@ const SignInForm = () => {
     },
   })
 
-  function onSubmit(values: z.infer<typeof signInFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+  async function onSubmit(user: z.infer<typeof signInFormSchema>) {
+    setLoading(true)
+    const result = await signIn("credentials", {
+      redirect: false,
+      email: user.email,
+      password: user.password,
+    })
+
+    if (result?.ok) {
+      setLoading(false)
+      router.push("/")
+      console.log("DEU CERTO", result)
+    }
+
+    if (result?.error) {
+      console.log(`DEU ERRADO: ${result.error}`)
+    }
   }
 
   return (
@@ -64,7 +84,11 @@ const SignInForm = () => {
           />
         </div>
         <Button type="submit" className="w-full">
-          Entrar
+          {loading ? (
+            <Image src="/loading.svg" width={20} height={20} alt="loading" />
+          ) : (
+            <p>Entrar</p>
+          )}
         </Button>
       </form>
     </Form>

@@ -48,7 +48,7 @@ const carrouselImages = [
   },
 ]
 
-export default function Home() {
+export default async function Home() {
   return (
     <div className="bg-man bg_man z-0 h-full bg-slate-50 px-8 pt-16 md:px-32 xl:px-64">
       <div className="z-10">
@@ -93,6 +93,7 @@ export default function Home() {
               Onde tradição e experiencia se encontram para oferecer a você a
               melhor experiencia em cortes.
             </p>
+            <p></p>
           </div>
         </div>
         <div className="space-y-4">

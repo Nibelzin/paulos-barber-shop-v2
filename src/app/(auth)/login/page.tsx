@@ -8,9 +8,27 @@ import { Button } from "../../_components/ui/button"
 import { FaChevronLeft } from "react-icons/fa6"
 import Link from "next/link"
 import SignUpForm from "../../_components/SingUpForm"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/app/_components/ui/dialog"
+import { FaCheckCircle } from "react-icons/fa"
+import { DialogDescription } from "@radix-ui/react-dialog"
 
 const Login = () => {
   const [signUpMode, setSignUpMode] = useState(false)
+  const [SuccessDialog, setSuccessDialog] = useState(false)
+
+  const handleSignUpSuccess = () => {
+    setSuccessDialog(!SuccessDialog)
+  }
+
+  const handleDialogClick = () => {
+    setSuccessDialog(false)
+    setSignUpMode(false)
+  }
 
   return (
     <div className="relative flex h-full flex-col items-center justify-center bg-black">
@@ -39,6 +57,20 @@ const Login = () => {
         alt="Paulo's Barbershop Logo"
         className="z-50 mb-4"
       />
+      <Dialog open={SuccessDialog} onOpenChange={handleSignUpSuccess}>
+        <DialogContent className="flex max-w-96 flex-col items-center justify-center space-y-4">
+          <DialogHeader className="flex items-center justify-center">
+            <DialogTitle className="flex justify-center text-xl">
+              Conta cadastrada com sucesso!
+            </DialogTitle>
+            <DialogDescription>Faça login para continuar</DialogDescription>
+          </DialogHeader>
+          <FaCheckCircle size={140} color="green" />
+          <Button className="w-full" onClick={handleDialogClick}>
+            Fazer Login
+          </Button>
+        </DialogContent>
+      </Dialog>
       <Card className="z-50 w-96">
         <CardHeader className="flex justify-between">
           {signUpMode ? (
@@ -70,7 +102,11 @@ const Login = () => {
           )}
         </CardHeader>
         <CardContent>
-          {signUpMode ? <SignUpForm /> : <SignInForm />}
+          {signUpMode ? (
+            <SignUpForm openSuccessDialog={handleSignUpSuccess} />
+          ) : (
+            <SignInForm />
+          )}
         </CardContent>
       </Card>
     </div>

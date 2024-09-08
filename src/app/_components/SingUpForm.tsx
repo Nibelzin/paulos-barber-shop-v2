@@ -12,18 +12,22 @@ import {
 import { Input } from "./ui/input"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useState } from "react"
+import Image from "next/image"
 
 const signUpFormSchema = z
   .object({
     username: z
       .string()
       .min(2, {
-        message: "O Nome deve conter pelo menos 2 caracteres",
+        message: "O nome deve conter pelo menos 2 caracteres",
       })
-      .max(50),
-    email: z.string().email(),
-    password: z.string().min(2),
-    confirmPassword: z.string().min(2),
+      .max(50, { message: "O nome pode conter no máximo 50 caracteres" }),
+    email: z.string().email({ message: "Email inválido" }),
+    password: z
+      .string()
+      .min(6, { message: "A senha deve conter pelo menos 6 caracteres" }),
+    confirmPassword: z.string(),
   })
   .superRefine(({ confirmPassword, password }, ctx) => {
     if (confirmPassword !== password) {
@@ -35,7 +39,9 @@ const signUpFormSchema = z
     }
   })
 
-const SignUpForm = () => {
+const SignUpForm = ({ openSuccessDialog }: SignUpFormProps) => {
+  const [loading, setLoading] = useState(false)
+
   const form = useForm<z.infer<typeof signUpFormSchema>>({
     resolver: zodResolver(signUpFormSchema),
     defaultValues: {
@@ -47,6 +53,7 @@ const SignUpForm = () => {
   })
 
   async function onSubmit(values: z.infer<typeof signUpFormSchema>) {
+    setLoading(true)
     const hashPassword = await bcrypt.hash(values.password, 10)
     const user: User = {
       name: values.username,
@@ -62,12 +69,18 @@ const SignUpForm = () => {
       body: JSON.stringify(user),
     })
 
+    const data = await result.json()
+
     if (result.ok) {
-      const data = await result.json()
-      console.log(data.message)
+      setLoading(false)
+      form.reset()
+      openSuccessDialog()
     } else {
-      const data = await result.json()
-      console.log(data.message)
+      setLoading(false)
+      form.setError("email", {
+        type: "validate",
+        message: "Email já cadastrado",
+      })
     }
   }
 
@@ -129,7 +142,11 @@ const SignUpForm = () => {
           />
         </div>
         <Button type="submit" className="w-full">
-          Registrar
+          {loading ? (
+            <Image src="/loading.svg" width={20} height={20} alt="loading" />
+          ) : (
+            <p>Registrar</p>
+          )}
         </Button>
       </form>
     </Form>

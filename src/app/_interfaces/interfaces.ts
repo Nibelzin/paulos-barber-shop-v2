@@ -5,3 +5,7 @@ declare interface User {
   avatarImg?: string
   admin: boolean
 }
+
+declare interface SignUpFormProps {
+  openSuccessDialog: Function
+}
