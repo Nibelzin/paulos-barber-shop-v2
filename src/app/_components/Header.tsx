@@ -15,7 +15,7 @@ import { Avatar, AvatarImage } from "./ui/avatar"
 import { Button } from "./ui/button"
 import { useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useDetectClickOutside } from "react-detect-click-outside"
 import {
   DropdownMenu,
@@ -28,6 +28,7 @@ import { signOut, useSession } from "next-auth/react"
 
 const Header = () => {
   const session = useSession()
+  const router = useRouter()
 
   const pathName = usePathname()
   const [isNavbarVisible, setNavbarVisible] = useState(false)
@@ -37,7 +38,7 @@ const Header = () => {
   }
 
   const handleSignOut = () => {
-    signOut()
+    signOut({ callbackUrl: "/", redirect: true })
   }
 
   const handleMenuClickOutside = () => {
@@ -48,6 +49,8 @@ const Header = () => {
     onTriggered: handleMenuClickOutside,
     disableTouch: true,
   })
+
+  console.log(session.data)
 
   return (
     <header className="fixed top-0 z-50 w-full">
@@ -96,14 +99,19 @@ const Header = () => {
                   {session.data?.user?.name}
                 </p>
                 <Avatar>
-                  <AvatarImage src="https://i.pinimg.com/736x/09/21/fc/0921fc87aa989330b8d403014bf4f340.jpg" />
+                  <AvatarImage
+                    src={`${session.data.user?.image}`}
+                    className="object-cover"
+                  />
                 </Avatar>
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent sideOffset={18}>
-              <DropdownMenuItem className="gap-2">
-                <FaUser />
-                <p className="font-bold">Meu Perfil</p>
+              <DropdownMenuItem className="gap-2" asChild>
+                <Link href="/profile">
+                  <FaUser />
+                  <p className="font-bold">Meu Perfil</p>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem className="gap-2">
                 <FaMoon />

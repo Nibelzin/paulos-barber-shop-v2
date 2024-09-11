@@ -42,12 +42,17 @@ export const authOptions: AuthOptions = {
         return {
           ...user,
           id: user.id.toString(),
+          image: user.avatarImg,
         }
       },
     }),
   ],
   callbacks: {
-    async session({ session }) {
+    async session({ session, token }) {
+      session.user = {
+        ...session.user,
+        id: token.sub,
+      } as any
       return session
     },
   },

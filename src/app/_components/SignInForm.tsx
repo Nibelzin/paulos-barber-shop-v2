@@ -44,11 +44,9 @@ const SignInForm = () => {
     if (result?.ok) {
       setLoading(false)
       router.push("/")
-      console.log("DEU CERTO", result)
     }
 
     if (result?.error) {
-      console.log(`DEU ERRADO: ${result.error}`)
     }
   }
 
