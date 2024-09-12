@@ -50,8 +50,6 @@ const Header = () => {
     disableTouch: true,
   })
 
-  console.log(session.data)
-
   return (
     <header className="fixed top-0 z-50 w-full">
       <div className="relative z-50 flex h-16 items-center justify-between border-b bg-white px-8 py-3 md:px-32 xl:px-64">
