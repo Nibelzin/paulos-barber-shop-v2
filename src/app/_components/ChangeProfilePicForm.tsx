@@ -4,7 +4,7 @@ import { FaChevronRight } from "react-icons/fa6"
 import { Avatar, AvatarImage } from "./ui/avatar"
 import { Input } from "./ui/input"
 import { Button } from "./ui/button"
-import { getSession, useSession } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import { useState } from "react"
 import { createClient } from "@supabase/supabase-js"
 import { v4 as uuidv4 } from "uuid"
@@ -22,6 +22,12 @@ const ChangeProfilePicForm = ({ closeDialog }: ChangeProfilePicFormProps) => {
   const supabase = createClient(supabaseUrl!, supabaseAnonKey!)
 
   const session = useSession()
+
+  const oldAvatar = session.data?.user.image
+  const oldAvatarName = oldAvatar?.split("/").pop()
+
+  console.log(`${session.data?.user.id}/${oldAvatarName}`)
+
   const { toast } = useToast()
 
   const [newAvatar, setNewAvatar] = useState<File | null>(null)
@@ -44,6 +50,10 @@ const ChangeProfilePicForm = ({ closeDialog }: ChangeProfilePicFormProps) => {
   const handleUpload = async () => {
     setLoading(true)
     try {
+      const oldAvatar = session.data?.user.image
+      const oldAvatarName = oldAvatar?.split("/").pop()
+      const oldAvatarPath = `${session.data?.user.id}/${oldAvatarName}`
+
       if (newAvatar) {
         const avatarExt = newAvatar.name.split(".").pop()
         const avatarName = `${uuidv4()}.${avatarExt}`
@@ -69,16 +79,20 @@ const ChangeProfilePicForm = ({ closeDialog }: ChangeProfilePicFormProps) => {
           image: `https://dgaffgowljicqcbkgwsa.supabase.co/storage/v1/object/public/user_profile/${session.data?.user.id}/${avatarName}`,
         })
 
+        const removeOldAvatar = await supabase.storage
+          .from("user_profile")
+          .remove([oldAvatarPath])
+
         closeDialog()
 
         toast({
           description: "Avatar alterado com sucesso!",
         })
       }
-    } catch (e) {
+    } catch (e: any) {
       toast({
         title: "Error",
-        description: `${e}`,
+        description: e.message || "Ocorreu um erro inesperado",
         variant: "destructive",
       })
     }
