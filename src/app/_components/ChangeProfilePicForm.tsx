@@ -141,7 +141,9 @@ const ChangeProfilePicForm = ({ closeDialog }: ChangeProfilePicFormProps) => {
             <p>Salvar</p>
           )}
         </Button>
-        <Button variant="outline">Cancelar</Button>
+        <Button variant="outline" onClick={() => closeDialog()}>
+          Cancelar
+        </Button>
       </div>
     </div>
   )

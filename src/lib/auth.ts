@@ -52,7 +52,10 @@ export const authOptions: AuthOptions = {
       if (trigger === "update" && session.image) {
         token.picture = session.image
       }
-
+      if ((trigger === "update" && session?.name) || session?.email) {
+        token.name = session.name
+        token.email = session.email
+      }
       return token
     },
     async session({ session, token }) {

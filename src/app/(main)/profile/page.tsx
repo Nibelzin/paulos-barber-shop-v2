@@ -1,5 +1,6 @@
 "use client"
 
+import { z } from "zod"
 import ChangeProfilePicForm from "@/app/_components/ChangeProfilePicForm"
 import { Avatar, AvatarImage } from "@/app/_components/ui/avatar"
 import { Button } from "@/app/_components/ui/button"
@@ -12,9 +13,17 @@ import {
 import { Input } from "@/app/_components/ui/input"
 import { useSession } from "next-auth/react"
 import { useState } from "react"
-import { FaPen } from "react-icons/fa6"
+import { FaKey, FaPen } from "react-icons/fa6"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import ChangeNameEmailForm from "@/app/_components/ChangeNameEmailForm"
+import { Label } from "@/app/_components/ui/label"
 
 const Profile = () => {
+  const [credentialsMode, setCredentialsMode] = useState<
+    "view" | "changeNameEmail" | "changePassword"
+  >("view")
+
   const [openDialog, setOpenDialog] = useState(false)
   const session = useSession()
 
@@ -22,9 +31,13 @@ const Profile = () => {
     setOpenDialog(!openDialog)
   }
 
+  const handleCancelButtonClick = () => {
+    setCredentialsMode("view")
+  }
+
   return (
-    <div className="bg-man relative h-full bg-slate-50 px-8 pb-16 pt-32 md:px-32 xl:px-64">
-      <div className="flex flex-col items-center justify-center">
+    <div className="bg-man relative flex h-full items-center justify-center bg-slate-50 px-8 pb-16 pt-32 md:px-32 xl:px-64">
+      <div className="flex w-96 flex-col items-center">
         <Dialog open={openDialog} onOpenChange={handleDialogChange}>
           <DialogTrigger>
             <div className="group/profile relative mb-12 h-32 w-32">
@@ -47,20 +60,65 @@ const Profile = () => {
           </DialogContent>
         </Dialog>
 
-        <div className="w-96">
-          <div className="mb-4 flex flex-col justify-between space-y-2">
-            <p>Nome</p>
-            <Input defaultValue={session.data?.user.name || ""}></Input>
-          </div>
-          <div className="mb-4 flex flex-col justify-between space-y-2">
-            <p>Email</p>
-            <Input defaultValue={session.data?.user.email || ""}></Input>
-          </div>
-          <div className="mb-12 flex flex-col justify-between space-y-2">
-            <p>Senha</p>
-            <Input defaultValue="" placeholder="****"></Input>
-          </div>
-          <Button className="w-full">Editar Informações da conta</Button>
+        <div className="w-full">
+          {(() => {
+            switch (credentialsMode) {
+              case "view":
+                return (
+                  <>
+                    <div>
+                      <div className="mb-4 space-y-2">
+                        <Label>Nome</Label>
+                        <Input
+                          className="mt-3"
+                          readOnly
+                          defaultValue={session.data?.user.name}
+                        />
+                      </div>
+                      <div className="mb-12 space-y-2">
+                        <Label>Email</Label>
+                        <Input
+                          className="mt-3"
+                          readOnly
+                          defaultValue={session.data?.user.email}
+                        />
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => setCredentialsMode("changeNameEmail")}
+                      className="mb-4 w-full"
+                    >
+                      Editar Informações da conta
+                    </Button>
+                    <Button
+                      onClick={() => setCredentialsMode("changePassword")}
+                      className="flex w-full gap-2"
+                    >
+                      <FaKey /> Alterar Senha
+                    </Button>
+                  </>
+                )
+              case "changeNameEmail":
+                return (
+                  <>
+                    <ChangeNameEmailForm cancelEdit={handleCancelButtonClick} />
+                  </>
+                )
+              case "changePassword":
+                return (
+                  <>
+                    <Button className="mb-4 w-full">Alterar Senha</Button>
+                    <Button
+                      onClick={() => setCredentialsMode("view")}
+                      className="w-full"
+                      variant="outline"
+                    >
+                      Cancelar
+                    </Button>
+                  </>
+                )
+            }
+          })()}
         </div>
       </div>
     </div>
