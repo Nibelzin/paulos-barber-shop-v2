@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import ChangeNameEmailForm from "@/app/_components/ChangeNameEmailForm"
 import { Label } from "@/app/_components/ui/label"
+import ChangePasswordForm from "@/app/_components/ChangePasswordForm"
 
 const Profile = () => {
   const [credentialsMode, setCredentialsMode] = useState<
@@ -107,14 +108,7 @@ const Profile = () => {
               case "changePassword":
                 return (
                   <>
-                    <Button className="mb-4 w-full">Alterar Senha</Button>
-                    <Button
-                      onClick={() => setCredentialsMode("view")}
-                      className="w-full"
-                      variant="outline"
-                    >
-                      Cancelar
-                    </Button>
+                    <ChangePasswordForm cancelEdit={handleCancelButtonClick} />
                   </>
                 )
             }

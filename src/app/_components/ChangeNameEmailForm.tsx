@@ -2,7 +2,14 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useSession } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "./ui/form"
 import { Input } from "./ui/input"
 import { Button } from "./ui/button"
 import { useEffect, useState } from "react"
@@ -102,6 +109,7 @@ const ChangeNameEmailForm = ({ cancelEdit }: ChangeNameEmailFormProps) => {
               <FormControl>
                 <Input {...field} className="border-dashed" />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -114,6 +122,7 @@ const ChangeNameEmailForm = ({ cancelEdit }: ChangeNameEmailFormProps) => {
               <FormControl>
                 <Input {...field} className="border-dashed" />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
