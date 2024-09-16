@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { boolean, z } from "zod"
+import { z } from "zod"
 import {
   Form,
   FormControl,
@@ -10,7 +10,6 @@ import {
   FormMessage,
 } from "./ui/form"
 import { Input } from "./ui/input"
-import bcrypt from "bcryptjs"
 import { Button } from "./ui/button"
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
@@ -87,7 +86,7 @@ const ChangePasswordForm = ({ cancelEdit }: ChangePasswordFormProps) => {
     passwordInput === undefined ||
     passwordInput === "" ||
     newPasswordInput === undefined ||
-    newPasswordInput === undefined
+    newPasswordInput === ""
 
   useEffect(() => {
     if (emptyInputs) {

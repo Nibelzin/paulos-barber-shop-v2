@@ -106,7 +106,7 @@ const ChangeProfilePicForm = ({ closeDialog }: ChangeProfilePicFormProps) => {
           <p className="mb-2 font-semibold">Avatar Atual</p>
           <Avatar className="h-32 w-32">
             <AvatarImage
-              src={`${session.data?.user?.image}`}
+              src={`${session.data?.user.image === "" ? "/default_profile_pic.jpg" : session.data?.user.image}`}
               className="object-cover"
             />
           </Avatar>
@@ -116,11 +116,7 @@ const ChangeProfilePicForm = ({ closeDialog }: ChangeProfilePicFormProps) => {
           <p className="mb-2 font-semibold">Novo Avatar</p>
           <Avatar className="h-32 w-32">
             <AvatarImage
-              src={
-                newAvatarUrl
-                  ? newAvatarUrl
-                  : "https://i.pinimg.com/736x/09/21/fc/0921fc87aa989330b8d403014bf4f340.jpg"
-              }
+              src={newAvatarUrl ? newAvatarUrl : "/default_profile_pic.jpg"}
               className="object-cover"
             />
           </Avatar>

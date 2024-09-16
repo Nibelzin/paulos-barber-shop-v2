@@ -1,6 +1,5 @@
 "use client"
 
-import { z } from "zod"
 import ChangeProfilePicForm from "@/app/_components/ChangeProfilePicForm"
 import { Avatar, AvatarImage } from "@/app/_components/ui/avatar"
 import { Button } from "@/app/_components/ui/button"
@@ -14,8 +13,6 @@ import { Input } from "@/app/_components/ui/input"
 import { useSession } from "next-auth/react"
 import { useState } from "react"
 import { FaKey, FaPen } from "react-icons/fa6"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
 import ChangeNameEmailForm from "@/app/_components/ChangeNameEmailForm"
 import { Label } from "@/app/_components/ui/label"
 import ChangePasswordForm from "@/app/_components/ChangePasswordForm"
@@ -49,7 +46,7 @@ const Profile = () => {
               />
               <Avatar className="relative mb-12 h-32 w-32 transition-all group-hover/profile:brightness-75">
                 <AvatarImage
-                  src={`${session.data?.user.image}`}
+                  src={`${session.data?.user.image === "" ? "/default_profile_pic.jpg" : session.data?.user.image}`}
                   className="object-cover"
                 />
               </Avatar>

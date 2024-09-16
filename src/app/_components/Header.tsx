@@ -98,7 +98,7 @@ const Header = () => {
                 </p>
                 <Avatar>
                   <AvatarImage
-                    src={`${session.data.user?.image}`}
+                    src={`${session.data?.user.image === "" ? "/default_profile_pic.jpg" : session.data?.user.image}`}
                     className="object-cover"
                   />
                 </Avatar>

@@ -8,28 +8,44 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu"
 import { FaRegTrashAlt } from "react-icons/fa"
+import dayjs from "dayjs"
+import utc from "dayjs/plugin/utc"
+
+dayjs.extend(utc)
 
 interface BookingCardProps {
   page?: "home" | "booking"
+  booking: Booking
 }
 
-const BookingCard = ({ page }: BookingCardProps) => {
+const BookingCard = ({ page, booking }: BookingCardProps) => {
+  const bookingDate = dayjs.utc(booking.date)
+
+  const getDate = bookingDate.format("DD/MM/YYYY")
+  const getHours = bookingDate.format("HH:mm")
+
+  const isPast = bookingDate.isBefore(dayjs())
+
   return (
     <div
       className={`${page === "home" ? "max-w-96" : "max-w-full"} max-w-96 space-y-4 rounded-md border bg-white p-4 drop-shadow-md`}
     >
       <div className="flex justify-between">
         <div>
-          <h2 className="mb-1 text-lg font-bold">
-            Corte + Barba + Sobrancelha
-          </h2>
-          <div className="w-fit rounded-full border border-green-300 bg-green-100 px-2 py-1">
-            <p className="text-xs font-bold text-green-700">Confirmado</p>
-          </div>
+          <h2 className="mb-1 text-lg font-bold">{booking.service.name}</h2>
+          {isPast ? (
+            <div className="w-fit rounded-full border border-blue-300 bg-blue-100 px-2 py-1">
+              <p className="text-xs font-bold text-blue-700">Concluido</p>
+            </div>
+          ) : (
+            <div className="w-fit rounded-full border border-green-300 bg-green-100 px-2 py-1">
+              <p className="text-xs font-bold text-green-700">Confirmado</p>
+            </div>
+          )}
         </div>
         <div className="flex flex-col items-end space-y-1">
-          <p className="text-3xl font-bold">12:30</p>
-          <p className="text-sm font-bold text-slate-700">01/09/2024</p>
+          <p className="text-3xl font-bold">{getHours}</p>
+          <p className="text-sm font-bold text-slate-700">{getDate}</p>
         </div>
       </div>
       <hr />
@@ -42,7 +58,7 @@ const BookingCard = ({ page }: BookingCardProps) => {
             <Avatar className="h-6 w-6">
               <AvatarImage src="/profile_1.jpg" />
             </Avatar>
-            <p className="text-sm font-bold">Luan Henrique</p>
+            <p className="text-sm font-bold">{booking.barber.name}</p>
           </div>
         </div>
         {page == "booking" && (
