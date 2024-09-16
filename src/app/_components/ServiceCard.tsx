@@ -1,25 +1,15 @@
+import { getFormattedDuration, getFormettedPrice } from "@/lib/utils"
+import BookingForm from "./BookingForm"
 import { Button } from "./ui/button"
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog"
 
 interface ServiceCardProps {
   service: Service
 }
 
 const ServiceCard = ({ service }: ServiceCardProps) => {
-  const getFormattedDuration = () => {
-    if (service.duration < 60) {
-      return service.duration + " min"
-    } else {
-      const hours = Math.floor(service.duration / 60)
-      const minutes = service.duration % 60
-      return hours + " hr " + minutes + " min"
-    }
-  }
-
-  const duration = getFormattedDuration()
-  const price = new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(service.price)
+  const duration = getFormattedDuration(service.duration)
+  const price = getFormettedPrice(service.price)
 
   return (
     <div className="rounded-md p-2">
@@ -31,7 +21,15 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
         </div>
         <div className="flex flex-col items-end justify-center gap-2">
           <p className="text-lg font-bold">{price}</p>
-          <Button>Reservar</Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>Reservar</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogTitle>Agendar Serviço</DialogTitle>
+              <BookingForm service={service} />
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>

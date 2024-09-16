@@ -21,7 +21,7 @@ export async function PUT(request: NextRequest) {
       )
     }
 
-    if (email && emailExists) {
+    if (email && emailExists && email !== user.email) {
       return NextResponse.json(
         { message: "Email não disponivel." },
         { status: 400 },
