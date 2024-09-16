@@ -21,7 +21,7 @@ declare interface Booking {
     name: string
     duration: number
     price: number
-    type: boolean
+    combo: boolean
   }
   barber: {
     id: number
@@ -29,4 +29,19 @@ declare interface Booking {
     avatarImg: string | null
     description: string | null
   }
+}
+
+declare interface Service {
+  id: number
+  name: string
+  duration: number
+  price: number
+  combo: boolean
+}
+
+declare interface Barber {
+  id: number
+  name: string
+  avatarImg: string | null
+  description: string | null
 }

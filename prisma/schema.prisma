@@ -69,7 +69,7 @@ model Service {
   name     String
   duration Int
   price    Float
-  type     Boolean
+  combo     Boolean
   bookings Booking[]
 }
 

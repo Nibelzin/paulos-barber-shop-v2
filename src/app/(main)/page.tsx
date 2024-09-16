@@ -12,27 +12,8 @@ import Map from "../_components/Map"
 import { FaInstagram, FaWhatsapp } from "react-icons/fa"
 import BookingCard from "../_components/BookingCard"
 import { getNextBookings } from "@/lib/bookings"
-
-const barbers = [
-  {
-    id: 1,
-    name: "Luan Henrique",
-    description: "10 Anos de experiencia",
-    imageUrl: "/profile_1.jpg",
-  },
-  {
-    id: 2,
-    name: "Paulo Souza",
-    description: "2 Anos de experiencia",
-    imageUrl: "/profile_2.jpg",
-  },
-  {
-    id: 3,
-    name: "Lucas Simplício",
-    description: "4 Anos de experiencia",
-    imageUrl: "/profile_3.jpg",
-  },
-]
+import { getComboServices, getSoloServices } from "@/lib/services"
+import { getBarbers } from "@/lib/barbers"
 
 const carrouselImages = [
   {
@@ -51,6 +32,11 @@ const carrouselImages = [
 
 export default async function Home() {
   const nextBookings = await getNextBookings()
+
+  const soloServices = await getSoloServices()
+  const comboServices = await getComboServices()
+
+  const barbers = await getBarbers()
 
   return (
     <div className="bg-man bg_man z-0 h-full bg-slate-50 px-8 pt-16 md:px-32 xl:px-64">
@@ -119,9 +105,9 @@ export default async function Home() {
             />
             <h2 className="text-2xl font-bold">Serviços</h2>
             <div>
-              <ServiceCard />
-              <ServiceCard />
-              <ServiceCard />
+              {soloServices.map((service) => (
+                <ServiceCard key={service.id} service={service} />
+              ))}
             </div>
           </div>
           <div className="relative h-fit flex-1 rounded-md border bg-white p-4 drop-shadow">
@@ -134,9 +120,9 @@ export default async function Home() {
             />
             <h2 className="text-2xl font-bold">Combos</h2>
             <div>
-              <ServiceCard />
-              <ServiceCard />
-              <ServiceCard />
+              {comboServices.map((service) => (
+                <ServiceCard key={service.id} service={service} />
+              ))}
             </div>
           </div>
         </div>
@@ -144,12 +130,7 @@ export default async function Home() {
           <h2 className="text-2xl font-bold">Membros da equipe</h2>
           <div className="flex gap-4 overflow-x-scroll">
             {barbers.map((barber) => (
-              <BarberCard
-                key={barber.id}
-                name={barber.name}
-                imageUrl={barber.imageUrl}
-                description={barber.description}
-              />
+              <BarberCard key={barber.id} barber={barber} />
             ))}
           </div>
         </div>
