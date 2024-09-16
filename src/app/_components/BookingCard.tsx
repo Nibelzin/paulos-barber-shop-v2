@@ -1,3 +1,5 @@
+"use client"
+
 import { BsThreeDots } from "react-icons/bs"
 import { Avatar, AvatarImage } from "./ui/avatar"
 import { Button } from "./ui/button"
@@ -10,6 +12,17 @@ import {
 import { FaRegTrashAlt } from "react-icons/fa"
 import dayjs from "dayjs"
 import utc from "dayjs/plugin/utc"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+} from "./ui/dialog"
+import { useToast } from "./hooks/use-toast"
+import Image from "next/image"
 
 dayjs.extend(utc)
 
@@ -19,16 +32,61 @@ interface BookingCardProps {
 }
 
 const BookingCard = ({ page, booking }: BookingCardProps) => {
+  const [loading, setLoading] = useState(false)
+  const [openCancelDialog, setOpenCancelDialog] = useState(false)
+
+  const router = useRouter()
   const bookingDate = dayjs.utc(booking.date)
+
+  const { toast } = useToast()
 
   const getDate = bookingDate.format("DD/MM/YYYY")
   const getHours = bookingDate.format("HH:mm")
 
   const isPast = bookingDate.isBefore(dayjs())
 
+  const handleCancelDialog = () => {
+    setOpenCancelDialog(!openCancelDialog)
+  }
+
+  const handleBookingClick = () => {
+    router.push("/bookings")
+  }
+
+  const cancelBooking = async () => {
+    setLoading(true)
+
+    const result = await fetch("/api/booking", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        bookingId: booking.id,
+      }),
+    })
+
+    const data = await result.json()
+
+    if (result.ok) {
+      setLoading(false)
+      toast({
+        description: "Agendamento cancelado com sucesso!",
+      })
+    } else {
+      setLoading(false)
+      toast({
+        title: "Erro cancelar agendamento",
+        description: data.message,
+      })
+    }
+
+    router.refresh()
+    handleCancelDialog()
+  }
+
   return (
     <div
-      className={`${page === "home" ? "max-w-96" : "max-w-full"} max-w-96 space-y-4 rounded-md border bg-white p-4 drop-shadow-md`}
+      className={`${page === "home" ? "max-w-96 cursor-pointer" : "max-w-full"} max-w-96 space-y-4 rounded-md border bg-white p-4 drop-shadow-md`}
+      onClick={handleBookingClick}
     >
       <div className="flex justify-between">
         <div>
@@ -56,12 +114,14 @@ const BookingCard = ({ page, booking }: BookingCardProps) => {
           <p className="font-bold">Profissional:</p>
           <div className="flex items-center gap-1">
             <Avatar className="h-6 w-6">
-              <AvatarImage src="/profile_1.jpg" />
+              <AvatarImage
+                src={`${booking.barber.avatarImg === null || booking.barber.avatarImg === "" ? "/default_profile_pic.jpg" : booking.barber.avatarImg}`}
+              />
             </Avatar>
             <p className="text-sm font-bold">{booking.barber.name}</p>
           </div>
         </div>
-        {page == "booking" && (
+        {page == "booking" && !isPast && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon">
@@ -69,7 +129,10 @@ const BookingCard = ({ page, booking }: BookingCardProps) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem className="flex gap-1 text-red-500">
+              <DropdownMenuItem
+                className="flex gap-1 text-red-500"
+                onClick={handleCancelDialog}
+              >
                 <FaRegTrashAlt />
                 <p className="font-bold">Cancelar</p>
               </DropdownMenuItem>
@@ -77,6 +140,32 @@ const BookingCard = ({ page, booking }: BookingCardProps) => {
           </DropdownMenu>
         )}
       </div>
+      <Dialog open={openCancelDialog} onOpenChange={handleCancelDialog}>
+        <DialogContent>
+          <DialogTitle>Tem certeza?</DialogTitle>
+          <DialogDescription>
+            Esta ação ira cancelar o agendamento do dia {getDate} as {getHours}.
+          </DialogDescription>
+          <DialogFooter>
+            <Button
+              onClick={cancelBooking}
+              className="w-full"
+              variant="destructive"
+            >
+              {loading ? (
+                <Image
+                  src="/loading.svg"
+                  width={20}
+                  height={20}
+                  alt="loading"
+                />
+              ) : (
+                <p>Confirmar</p>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

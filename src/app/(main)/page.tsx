@@ -11,6 +11,7 @@ import ServiceCard from "../_components/ServiceCard"
 import Map from "../_components/Map"
 import { FaInstagram, FaWhatsapp } from "react-icons/fa"
 import BookingCard from "../_components/BookingCard"
+import { getNextBookings } from "@/lib/bookings"
 
 const barbers = [
   {
@@ -49,6 +50,8 @@ const carrouselImages = [
 ]
 
 export default async function Home() {
+  const nextBookings = await getNextBookings()
+
   return (
     <div className="bg-man bg_man z-0 h-full bg-slate-50 px-8 pt-16 md:px-32 xl:px-64">
       <div className="z-10">
@@ -96,10 +99,14 @@ export default async function Home() {
             <p></p>
           </div>
         </div>
-        <div className="space-y-4">
-          <h2 className="text-2xl font-bold">Próximo Agendamento</h2>
-          {/* <BookingCard page="home" /> */}
-        </div>
+        {nextBookings.length > 0 && (
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold">Próximo Agendamento</h2>
+            {nextBookings.map((booking) => (
+              <BookingCard key={booking.id} page="home" booking={booking} />
+            ))}
+          </div>
+        )}
         <hr className="my-16" />
         <div className="mb-16 flex w-full flex-col gap-6 xl:flex-row">
           <div className="relative h-fit flex-1 rounded-md border bg-white p-4 drop-shadow">
