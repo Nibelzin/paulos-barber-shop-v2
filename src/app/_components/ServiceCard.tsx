@@ -2,12 +2,15 @@ import { getFormattedDuration, getFormettedPrice } from "@/lib/utils"
 import BookingForm from "./BookingForm"
 import { Button } from "./ui/button"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog"
+import { getBookings } from "@/lib/bookings"
 
 interface ServiceCardProps {
   service: Service
 }
 
-const ServiceCard = ({ service }: ServiceCardProps) => {
+const ServiceCard = async ({ service }: ServiceCardProps) => {
+  const bookings = await getBookings()
+
   const duration = getFormattedDuration(service.duration)
   const price = getFormettedPrice(service.price)
 
@@ -26,8 +29,8 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
               <Button>Reservar</Button>
             </DialogTrigger>
             <DialogContent>
-              <DialogTitle>Agendar Serviço</DialogTitle>
-              <BookingForm service={service} />
+              <DialogTitle className="text-xl">Agendar Serviço</DialogTitle>
+              <BookingForm service={service} bookings={bookings} />
             </DialogContent>
           </Dialog>
         </div>

@@ -85,12 +85,14 @@ const BookingCard = ({ page, booking }: BookingCardProps) => {
 
   return (
     <div
-      className={`${page === "home" ? "max-w-96 cursor-pointer" : "max-w-full"} max-w-96 space-y-4 rounded-md border bg-white p-4 drop-shadow-md`}
+      className={`${page === "home" ? "w-96 cursor-pointer" : "max-w-full"} max-w-96 space-y-4 rounded-md border bg-white p-4 drop-shadow-md`}
       onClick={handleBookingClick}
     >
       <div className="flex justify-between">
-        <div>
-          <h2 className="mb-1 text-lg font-bold">{booking.service.name}</h2>
+        <div className="w-72">
+          <h2 className="mb-1 truncate text-lg font-bold">
+            {booking.service.name}
+          </h2>
           {isPast ? (
             <div className="w-fit rounded-full border border-blue-300 bg-blue-100 px-2 py-1">
               <p className="text-xs font-bold text-blue-700">Concluido</p>

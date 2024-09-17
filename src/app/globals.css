@@ -77,6 +77,10 @@
   animation-timeline: scroll();
 }
 
+.dp-full-width {
+  width: 100%;
+}
+
 
 @keyframes parallax {
   to {

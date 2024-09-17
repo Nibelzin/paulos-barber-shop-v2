@@ -88,9 +88,11 @@ export default async function Home() {
         {nextBookings.length > 0 && (
           <div className="space-y-4">
             <h2 className="text-2xl font-bold">Próximo Agendamento</h2>
-            {nextBookings.map((booking) => (
-              <BookingCard key={booking.id} page="home" booking={booking} />
-            ))}
+            <div className="flex w-full gap-4 overflow-x-auto">
+              {nextBookings.map((booking) => (
+                <BookingCard key={booking.id} page="home" booking={booking} />
+              ))}
+            </div>
           </div>
         )}
         <hr className="my-16" />

@@ -18,7 +18,7 @@ import Image from "next/image"
 
 const signInFormSchema = z.object({
   email: z.string().email({ message: "Email inválido" }),
-  password: z.string(),
+  password: z.string().min(1, { message: "Digite uma senha" }),
 })
 
 const SignInForm = () => {
@@ -47,6 +47,11 @@ const SignInForm = () => {
     }
 
     if (result?.error) {
+      setLoading(false)
+      form.setError("password", {
+        type: "validate",
+        message: "Email ou senha incorretos",
+      })
     }
   }
 
