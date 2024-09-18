@@ -28,7 +28,7 @@ const ServiceCard = async ({ service }: ServiceCardProps) => {
             <DialogTrigger asChild>
               <Button>Reservar</Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="h-[620px] overflow-y-auto md:h-fit">
               <DialogTitle className="text-xl">Agendar Serviço</DialogTitle>
               <BookingForm service={service} bookings={bookings} />
             </DialogContent>
