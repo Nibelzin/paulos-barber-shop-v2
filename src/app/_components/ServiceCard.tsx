@@ -3,6 +3,7 @@ import BookingForm from "./BookingForm"
 import { Button } from "./ui/button"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog"
 import { getBookings } from "@/lib/bookings"
+import { getBarbers } from "@/lib/barbers"
 
 interface ServiceCardProps {
   service: Service
@@ -10,6 +11,7 @@ interface ServiceCardProps {
 
 const ServiceCard = async ({ service }: ServiceCardProps) => {
   const bookings = await getBookings()
+  const barbers = await getBarbers()
 
   const duration = getFormattedDuration(service.duration)
   const price = getFormettedPrice(service.price)
@@ -30,7 +32,11 @@ const ServiceCard = async ({ service }: ServiceCardProps) => {
             </DialogTrigger>
             <DialogContent className="h-[620px] overflow-y-auto md:h-fit">
               <DialogTitle className="text-xl">Agendar Serviço</DialogTitle>
-              <BookingForm service={service} bookings={bookings} />
+              <BookingForm
+                service={service}
+                bookings={bookings}
+                barbers={barbers}
+              />
             </DialogContent>
           </Dialog>
         </div>

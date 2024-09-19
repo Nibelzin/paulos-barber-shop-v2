@@ -31,7 +31,7 @@ export const generateTimeSlots = (
   interval: number,
 ) => {
   const times = []
-  let current = dayjs("09:00", "HH:mm")
+  let current = dayjs(start, "HH:mm")
 
   while (
     current.isBefore(dayjs(end, "HH:mm")) ||

@@ -11,7 +11,6 @@ import {
 } from "./ui/dropdown-menu"
 import { FaRegTrashAlt } from "react-icons/fa"
 import dayjs from "dayjs"
-import utc from "dayjs/plugin/utc"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import {
@@ -24,8 +23,6 @@ import {
 import { useToast } from "./hooks/use-toast"
 import Image from "next/image"
 
-dayjs.extend(utc)
-
 interface BookingCardProps {
   page?: "home" | "booking"
   booking: Booking
@@ -36,7 +33,7 @@ const BookingCard = ({ page, booking }: BookingCardProps) => {
   const [openCancelDialog, setOpenCancelDialog] = useState(false)
 
   const router = useRouter()
-  const bookingDate = dayjs.utc(booking.date)
+  const bookingDate = dayjs(booking.date)
 
   const { toast } = useToast()
 
@@ -115,12 +112,18 @@ const BookingCard = ({ page, booking }: BookingCardProps) => {
         >
           <p className="font-bold">Profissional:</p>
           <div className="flex items-center gap-1">
-            <Avatar className="h-6 w-6">
-              <AvatarImage
-                src={`${booking.barber.avatarImg === null || booking.barber.avatarImg === "" ? "/default_profile_pic.jpg" : booking.barber.avatarImg}`}
-              />
-            </Avatar>
-            <p className="text-sm font-bold">{booking.barber.name}</p>
+            {booking.barber ? (
+              <>
+                <Avatar className="h-6 w-6">
+                  <AvatarImage
+                    src={`${booking.barber.avatarImg === null || booking.barber.avatarImg === "" ? "/default_profile_pic.jpg" : booking.barber.avatarImg}`}
+                  />
+                </Avatar>
+                <p className="text-sm font-bold">{booking.barber.name}</p>
+              </>
+            ) : (
+              <p>Sem preferencia</p>
+            )}
           </div>
         </div>
         {page == "booking" && !isPast && (

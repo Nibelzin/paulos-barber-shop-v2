@@ -13,7 +13,7 @@ declare interface SignUpFormProps {
 declare interface Booking {
   id: number
   serviceId: number
-  barberId: number
+  barberId: number | null
   userId: number
   date: Date
   service: {
@@ -28,7 +28,7 @@ declare interface Booking {
     name: string
     avatarImg: string | null
     description: string | null
-  }
+  } | null
 }
 
 declare interface Service {
@@ -40,7 +40,7 @@ declare interface Service {
 }
 
 declare interface Barber {
-  id: number
+  id: number | null
   name: string
   avatarImg: string | null
   description: string | null

@@ -1,27 +1,83 @@
 "use client"
 
-import { generateTimeSlots, getFormattedDuration } from "@/lib/utils"
+import {
+  generateTimeSlots,
+  getFormattedDuration,
+  getFormettedPrice,
+} from "@/lib/utils"
 import { Calendar } from "./ui/calendar"
 import { useEffect, useState } from "react"
 import dayjs from "dayjs"
 import { Badge } from "./ui/badge"
 import BookingOrder from "./BookingOrder"
 import { Button } from "./ui/button"
+import { useSession } from "next-auth/react"
+import { useToast } from "./hooks/use-toast"
+import Image from "next/image"
 
 interface BookingFormProps {
   service: Service
   bookings: Booking[]
+  barbers: Barber[]
 }
 
-const BookingForm = ({ service, bookings }: BookingFormProps) => {
+const BookingForm = ({ service, bookings, barbers }: BookingFormProps) => {
+  const { toast } = useToast()
+  const session = useSession()
+
   const duration = getFormattedDuration(service.duration)
+
+  const [loading, setLoading] = useState(false)
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [selectedHour, setSelectedHour] = useState<String | undefined>()
+  const [selectedBarber, setSelectedBarber] = useState<Barber | null>(null)
 
   const selectedDate = dayjs(date)
+  const formattedPrice = getFormettedPrice(service.price)
 
   const handleHourBadgeClick = (hour: string) => {
     setSelectedHour(hour)
+  }
+
+  const setBookingBarber = (barber: Barber) => {
+    setSelectedBarber(barber)
+  }
+
+  const makeABooking = async () => {
+    setLoading(true)
+    if (!session.data) {
+      setLoading(false)
+      return
+    }
+
+    const booking = {
+      serviceId: service.id,
+      barberId: selectedBarber ? selectedBarber.id : null,
+      userId: parseInt(session.data?.user.id),
+      date: date,
+      hour: selectedHour,
+    }
+
+    const result = await fetch("/api/booking", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(booking),
+    })
+
+    const data = await result.json()
+
+    if (result.ok) {
+      setLoading(false)
+      toast({
+        description: "Serviço agendado com sucesso!",
+      })
+    } else {
+      setLoading(false)
+      toast({
+        title: "Erro agendar serviço",
+        description: data.message,
+      })
+    }
   }
 
   useEffect(() => {
@@ -37,6 +93,18 @@ const BookingForm = ({ service, bookings }: BookingFormProps) => {
   const timeHours = generateTimeSlots("09:00", "18:00", 30)
   const hoursTaken: string[] = []
 
+  const now = dayjs()
+
+  const filteredTimeHours = timeHours.filter((hour) => {
+    const hourTime = dayjs(hour, "HH:mm")
+    if (
+      (selectedDate.isSame(now, "day") && hourTime.isAfter(now)) ||
+      !selectedDate.isSame(now, "day")
+    ) {
+      return hour
+    }
+  })
+
   selectedDateBookings.map((booking) => {
     const bookingHour = dayjs(booking.date)
     const numHoursTaken = Math.round(booking.service.duration / 30)
@@ -48,13 +116,11 @@ const BookingForm = ({ service, bookings }: BookingFormProps) => {
     }
   })
 
-  const availableHours = timeHours.filter((hour) => {
+  const availableHours = filteredTimeHours.filter((hour) => {
     if (!hoursTaken.includes(hour)) {
       return hour
     }
   })
-
-  console.log(availableHours)
 
   return (
     <div className="w-full space-y-6">
@@ -84,12 +150,28 @@ const BookingForm = ({ service, bookings }: BookingFormProps) => {
           </div>
         </div>
       </div>
-      <BookingOrder service={service} date={date} hour={selectedHour} />
+      <BookingOrder
+        service={service}
+        barbers={barbers}
+        date={date}
+        hour={selectedHour}
+        setBookingBarber={setBookingBarber}
+      />
       <div className="flex justify-between">
         <h2 className="text-xl font-bold">Total:</h2>
-        <p className="text-xl font-bold">R$ 20,00</p>
+        <p className="text-xl font-bold">{formattedPrice}</p>
       </div>
-      <Button className="w-full">Agendar</Button>
+      <Button
+        className="w-full"
+        onClick={makeABooking}
+        disabled={selectedHour ? false : true}
+      >
+        {loading ? (
+          <Image src="/loading.svg" width={20} height={20} alt="loading" />
+        ) : (
+          <p>Salvar</p>
+        )}
+      </Button>
     </div>
   )
 }

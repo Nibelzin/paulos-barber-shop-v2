@@ -94,7 +94,7 @@ const ChangePasswordForm = ({ cancelEdit }: ChangePasswordFormProps) => {
     } else {
       setEnableSave(true)
     }
-  }, [passwordInput, newPasswordInput])
+  }, [passwordInput, newPasswordInput, emptyInputs])
 
   return (
     <Form {...changePasswordForm}>
