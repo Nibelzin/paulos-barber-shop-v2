@@ -1,17 +1,19 @@
+"use client"
+
 import { getFormattedDuration, getFormettedPrice } from "@/lib/utils"
 import BookingForm from "./BookingForm"
 import { Button } from "./ui/button"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog"
-import { getBookings } from "@/lib/bookings"
-import { getBarbers } from "@/lib/barbers"
+import { useState } from "react"
 
 interface ServiceCardProps {
   service: Service
+  bookings?: Booking[]
+  barbers?: Barber[]
 }
 
-const ServiceCard = async ({ service }: ServiceCardProps) => {
-  const bookings = await getBookings()
-  const barbers = await getBarbers()
+const ServiceCard = ({ service, bookings, barbers }: ServiceCardProps) => {
+  const [open, setOpen] = useState(false)
 
   const duration = getFormattedDuration(service.duration)
   const price = getFormettedPrice(service.price)
@@ -26,17 +28,20 @@ const ServiceCard = async ({ service }: ServiceCardProps) => {
         </div>
         <div className="flex flex-col items-end justify-center gap-2">
           <p className="text-lg font-bold">{price}</p>
-          <Dialog>
+          <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button>Reservar</Button>
             </DialogTrigger>
             <DialogContent className="h-[620px] overflow-y-auto md:h-fit">
               <DialogTitle className="text-xl">Agendar Serviço</DialogTitle>
-              <BookingForm
-                service={service}
-                bookings={bookings}
-                barbers={barbers}
-              />
+              {bookings && barbers && (
+                <BookingForm
+                  service={service}
+                  bookings={bookings}
+                  barbers={barbers}
+                  closeDialog={() => setOpen(false)}
+                />
+              )}
             </DialogContent>
           </Dialog>
         </div>

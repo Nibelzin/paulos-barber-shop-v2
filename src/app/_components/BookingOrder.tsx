@@ -79,7 +79,7 @@ const BookingOrder = ({
           </div>
         </div>
         <Popover open={openSelectBarber} onOpenChange={setOpenSelectBarber}>
-          <PopoverTrigger>
+          <PopoverTrigger asChild>
             <Button variant="outline">Alterar</Button>
           </PopoverTrigger>
           <PopoverContent className="p-2">

@@ -14,22 +14,28 @@ import { Button } from "./ui/button"
 import { useSession } from "next-auth/react"
 import { useToast } from "./hooks/use-toast"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 interface BookingFormProps {
   service: Service
   bookings: Booking[]
   barbers: Barber[]
+  closeDialog: Function
 }
 
-const BookingForm = ({ service, bookings, barbers }: BookingFormProps) => {
+const BookingForm = ({
+  service,
+  bookings,
+  barbers,
+  closeDialog,
+}: BookingFormProps) => {
   const { toast } = useToast()
   const session = useSession()
-
-  const duration = getFormattedDuration(service.duration)
+  const router = useRouter()
 
   const [loading, setLoading] = useState(false)
   const [date, setDate] = useState<Date | undefined>(new Date())
-  const [selectedHour, setSelectedHour] = useState<String | undefined>()
+  const [selectedHour, setSelectedHour] = useState<string | undefined>()
   const [selectedBarber, setSelectedBarber] = useState<Barber | null>(null)
 
   const selectedDate = dayjs(date)
@@ -43,16 +49,101 @@ const BookingForm = ({ service, bookings, barbers }: BookingFormProps) => {
     setSelectedBarber(barber)
   }
 
+  useEffect(() => {
+    setSelectedHour(undefined)
+  }, [date])
+
+  const timeHours = generateTimeSlots("09:00", "18:00", 30)
+
+  const now = dayjs()
+
+  const filteredTimeHours = timeHours.filter((hour) => {
+    const hourTime = dayjs(hour, "HH:mm")
+    if (
+      (selectedDate.isSame(now, "day") && hourTime.isAfter(now)) ||
+      !selectedDate.isSame(now, "day")
+    ) {
+      return hour
+    }
+  })
+
+  const barberAvailableHours = barbers.map((barber) => {
+    const selectedDateBookings = bookings.filter((booking) => {
+      if (
+        selectedDate.isSame(dayjs(booking.date), "day") &&
+        booking.barberId === barber.id
+      ) {
+        return booking
+      }
+    })
+
+    const hoursTaken: string[] = []
+
+    selectedDateBookings.map((booking) => {
+      const bookingHour = dayjs(booking.date)
+      const numHoursTaken = Math.round(booking.service.duration / 30)
+
+      let acumHour = bookingHour
+      for (let i = 0; i < numHoursTaken; i++) {
+        hoursTaken.push(acumHour.format("HH:mm"))
+        acumHour = acumHour.add(30, "minute")
+      }
+    })
+
+    const availableHours = filteredTimeHours.filter((hour) => {
+      if (!hoursTaken.includes(hour)) {
+        return hour
+      }
+    })
+
+    return {
+      barberId: barber.id,
+      availableHours: availableHours,
+    }
+  })
+
+  const combinedBarberHours = barberAvailableHours
+    .map((barber) => {
+      return barber.availableHours
+    })
+    .flat()
+
+  const noPreferenceAvailableHours = Array.from(
+    new Set(combinedBarberHours),
+  ).sort((a, b) => {
+    return a.localeCompare(b)
+  })
+
+  barberAvailableHours.push({
+    barberId: -1,
+    availableHours: noPreferenceAvailableHours,
+  })
+
   const makeABooking = async () => {
     setLoading(true)
-    if (!session.data) {
+    if (!session.data || !selectedHour) {
       setLoading(false)
       return
     }
 
+    let barberId = null
+
+    if (!selectedBarber) {
+      const availableBarbers = barberAvailableHours.filter((barber) => {
+        return (
+          barber.availableHours.includes(selectedHour) && barber.barberId !== -1
+        )
+      })
+
+      const randomIndex = Math.floor(Math.random() * availableBarbers.length)
+      barberId = availableBarbers[randomIndex].barberId
+    } else {
+      barberId = selectedBarber.id
+    }
+
     const booking = {
       serviceId: service.id,
-      barberId: selectedBarber ? selectedBarber.id : null,
+      barberId: barberId,
       userId: parseInt(session.data?.user.id),
       date: date,
       hour: selectedHour,
@@ -71,6 +162,8 @@ const BookingForm = ({ service, bookings, barbers }: BookingFormProps) => {
       toast({
         description: "Serviço agendado com sucesso!",
       })
+      closeDialog()
+      router.refresh()
     } else {
       setLoading(false)
       toast({
@@ -80,47 +173,7 @@ const BookingForm = ({ service, bookings, barbers }: BookingFormProps) => {
     }
   }
 
-  useEffect(() => {
-    setSelectedHour(undefined)
-  }, [date])
-
-  const selectedDateBookings = bookings.filter((booking) => {
-    if (selectedDate.isSame(dayjs(booking.date), "day")) {
-      return booking
-    }
-  })
-
-  const timeHours = generateTimeSlots("09:00", "18:00", 30)
-  const hoursTaken: string[] = []
-
-  const now = dayjs()
-
-  const filteredTimeHours = timeHours.filter((hour) => {
-    const hourTime = dayjs(hour, "HH:mm")
-    if (
-      (selectedDate.isSame(now, "day") && hourTime.isAfter(now)) ||
-      !selectedDate.isSame(now, "day")
-    ) {
-      return hour
-    }
-  })
-
-  selectedDateBookings.map((booking) => {
-    const bookingHour = dayjs(booking.date)
-    const numHoursTaken = Math.round(booking.service.duration / 30)
-
-    let acumHour = bookingHour
-    for (let i = 0; i < numHoursTaken; i++) {
-      hoursTaken.push(acumHour.format("HH:mm"))
-      acumHour = acumHour.add(30, "minute")
-    }
-  })
-
-  const availableHours = filteredTimeHours.filter((hour) => {
-    if (!hoursTaken.includes(hour)) {
-      return hour
-    }
-  })
+  console.log(barberAvailableHours)
 
   return (
     <div className="w-full space-y-6">
@@ -137,16 +190,23 @@ const BookingForm = ({ service, bookings, barbers }: BookingFormProps) => {
         <p className="font-bold">Horario</p>
         <div className="flex w-full items-center justify-center">
           <div className="flex w-[320px] max-w-full gap-2 overflow-x-scroll sm:w-[420px]">
-            {availableHours.map((hour) => (
-              <Badge
-                key={hour}
-                className="cursor-pointer rounded-md p-2"
-                variant={selectedHour === hour ? "default" : "outline"}
-                onClick={() => handleHourBadgeClick(hour)}
-              >
-                {hour}
-              </Badge>
-            ))}
+            {barberAvailableHours.map((barber) => {
+              if (
+                barber.barberId ===
+                (selectedBarber?.id ? selectedBarber.id : -1)
+              ) {
+                return barber.availableHours.map((hour) => (
+                  <Badge
+                    key={hour}
+                    className="cursor-pointer rounded-md p-2"
+                    variant={selectedHour === hour ? "default" : "outline"}
+                    onClick={() => handleHourBadgeClick(hour)}
+                  >
+                    {hour}
+                  </Badge>
+                ))
+              }
+            })}
           </div>
         </div>
       </div>

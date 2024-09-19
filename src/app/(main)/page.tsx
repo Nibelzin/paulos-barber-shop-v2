@@ -11,7 +11,7 @@ import ServiceCard from "../_components/ServiceCard"
 import Map from "../_components/Map"
 import { FaInstagram, FaWhatsapp } from "react-icons/fa"
 import BookingCard from "../_components/BookingCard"
-import { getNextBookings } from "@/lib/bookings"
+import { getBookings, getNextBookings } from "@/lib/bookings"
 import { getComboServices, getSoloServices } from "@/lib/services"
 import { getBarbers } from "@/lib/barbers"
 
@@ -36,6 +36,7 @@ export default async function Home() {
   const soloServices = await getSoloServices()
   const comboServices = await getComboServices()
 
+  const bookings = await getBookings()
   const barbers = await getBarbers()
 
   return (
@@ -108,7 +109,12 @@ export default async function Home() {
             <h2 className="text-2xl font-bold">Serviços</h2>
             <div>
               {soloServices.map((service) => (
-                <ServiceCard key={service.id} service={service} />
+                <ServiceCard
+                  key={service.id}
+                  service={service}
+                  barbers={barbers}
+                  bookings={bookings}
+                />
               ))}
             </div>
           </div>
