@@ -6,6 +6,7 @@ import {
   FaArrowRightToBracket,
   FaBars,
   FaChevronDown,
+  FaGears,
   FaMoon,
   FaUser,
 } from "react-icons/fa6"
@@ -25,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu"
 import { signOut, useSession } from "next-auth/react"
+import { Dialog, DialogContent } from "./ui/dialog"
 
 const Header = () => {
   const session = useSession()
@@ -32,6 +34,14 @@ const Header = () => {
 
   const pathName = usePathname()
   const [isNavbarVisible, setNavbarVisible] = useState(false)
+  const [openLoginPopUp, setOpenLoginPopUp] = useState(false)
+
+  const handleBookingsPageClick = () => {
+    if (session.status === "unauthenticated") {
+      return setOpenLoginPopUp(true)
+    }
+    router.push("/bookings")
+  }
 
   const handleMenuHamburguerClick = () => {
     setNavbarVisible(!isNavbarVisible)
@@ -77,12 +87,10 @@ const Header = () => {
             variant={`${pathName === "/bookings" ? "default" : "outline"}`}
             size="sm"
             className="flex items-center gap-2"
-            asChild
+            onClick={handleBookingsPageClick}
           >
-            <Link href="/bookings">
-              <FaCalendarAlt size={18} />
-              <p className="font-semibold">Agendamentos</p>
-            </Link>
+            <FaCalendarAlt size={18} />
+            <p className="font-semibold">Agendamentos</p>
           </Button>
         </div>
         {session.status === "authenticated" ? (
@@ -115,6 +123,14 @@ const Header = () => {
                 <FaMoon />
                 <p className="font-bold">Dark Mode</p>
               </DropdownMenuItem>
+              {session.data.user.isAdmin && (
+                <DropdownMenuItem className="gap-2" asChild>
+                  <Link href="/profile">
+                    <FaGears />
+                    <p className="font-bold">Admin</p>
+                  </Link>
+                </DropdownMenuItem>
+              )}
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="gap-2 text-red-500"
@@ -175,6 +191,20 @@ const Header = () => {
           <p className="font-bold">Agendamentos</p>
         </Link>
       </div>
+      <Dialog open={openLoginPopUp} onOpenChange={setOpenLoginPopUp}>
+        <DialogContent className="w-96 rounded-lg">
+          <div className="flex flex-col items-center justify-center">
+            <h1 className="mb-4 font-bold">
+              Faça login para ver seus agendamentos
+            </h1>
+            <Button className="w-full" asChild>
+              <Link href="/login">
+                <p>Fazer Login</p>
+              </Link>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </header>
   )
 }

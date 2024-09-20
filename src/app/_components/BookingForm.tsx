@@ -6,7 +6,7 @@ import {
   getFormettedPrice,
 } from "@/lib/utils"
 import { Calendar } from "./ui/calendar"
-import { useEffect, useState } from "react"
+import { createRef, useEffect, useRef, useState } from "react"
 import dayjs from "dayjs"
 import { Badge } from "./ui/badge"
 import BookingOrder from "./BookingOrder"
@@ -15,6 +15,7 @@ import { useSession } from "next-auth/react"
 import { useToast } from "./hooks/use-toast"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa6"
 
 interface BookingFormProps {
   service: Service
@@ -29,6 +30,19 @@ const BookingForm = ({
   barbers,
   closeDialog,
 }: BookingFormProps) => {
+  const [hoursScrollPosition, setHoursScrollPosition] = useState(0)
+  const hoursContainerRef = createRef<HTMLDivElement>()
+
+  const handleScrollButtonClick = (scrollAmount: number) => {
+    const newScrollPosition = hoursScrollPosition + scrollAmount
+
+    setHoursScrollPosition(newScrollPosition)
+
+    if (hoursContainerRef.current) {
+      hoursContainerRef.current.scrollLeft = newScrollPosition
+    }
+  }
+
   const { toast } = useToast()
   const session = useSession()
   const router = useRouter()
@@ -122,6 +136,10 @@ const BookingForm = ({
   const makeABooking = async () => {
     setLoading(true)
     if (!session.data || !selectedHour) {
+      toast({
+        description: "É preciso estar logado para agendar um serviço!",
+        variant: "destructive",
+      })
       setLoading(false)
       return
     }
@@ -173,8 +191,6 @@ const BookingForm = ({
     }
   }
 
-  console.log(barberAvailableHours)
-
   return (
     <div className="w-full space-y-6">
       <div className="flex items-center justify-center">
@@ -188,26 +204,47 @@ const BookingForm = ({
       </div>
       <div className="space-y-2">
         <p className="font-bold">Horario</p>
-        <div className="flex w-full items-center justify-center">
-          <div className="flex w-[320px] max-w-full gap-2 overflow-x-scroll sm:w-[420px]">
-            {barberAvailableHours.map((barber) => {
-              if (
-                barber.barberId ===
-                (selectedBarber?.id ? selectedBarber.id : -1)
-              ) {
-                return barber.availableHours.map((hour) => (
-                  <Badge
-                    key={hour}
-                    className="cursor-pointer rounded-md p-2"
-                    variant={selectedHour === hour ? "default" : "outline"}
-                    onClick={() => handleHourBadgeClick(hour)}
-                  >
-                    {hour}
-                  </Badge>
-                ))
-              }
-            })}
+        <div className="flex w-full items-center justify-between gap-4">
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={() => handleScrollButtonClick(-250)}
+          >
+            <FaChevronLeft />
+          </Button>
+          <div
+            className="no-scrollbar flex w-[200px] gap-2 overflow-x-auto scroll-smooth sm:w-[350px]"
+            ref={hoursContainerRef}
+          >
+            {barberAvailableHours.length > 0 ? (
+              barberAvailableHours.map((barber) => {
+                if (
+                  barber.barberId ===
+                  (selectedBarber?.id ? selectedBarber.id : -1)
+                ) {
+                  return barber.availableHours.map((hour) => (
+                    <Badge
+                      key={hour}
+                      className="cursor-pointer rounded-md p-2"
+                      variant={selectedHour === hour ? "default" : "outline"}
+                      onClick={() => handleHourBadgeClick(hour)}
+                    >
+                      {hour}
+                    </Badge>
+                  ))
+                }
+              })
+            ) : (
+              <p>Sem horários disponiveis</p>
+            )}
           </div>
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={() => handleScrollButtonClick(250)}
+          >
+            <FaChevronRight />
+          </Button>
         </div>
       </div>
       <BookingOrder
@@ -221,17 +258,19 @@ const BookingForm = ({
         <h2 className="text-xl font-bold">Total:</h2>
         <p className="text-xl font-bold">{formattedPrice}</p>
       </div>
-      <Button
-        className="w-full"
-        onClick={makeABooking}
-        disabled={selectedHour ? false : true}
-      >
-        {loading ? (
-          <Image src="/loading.svg" width={20} height={20} alt="loading" />
-        ) : (
-          <p>Salvar</p>
-        )}
-      </Button>
+      <div className="flex flex-col items-center">
+        <Button
+          className="w-full"
+          onClick={makeABooking}
+          disabled={selectedHour ? false : true}
+        >
+          {loading ? (
+            <Image src="/loading.svg" width={20} height={20} alt="loading" />
+          ) : (
+            <p>Salvar</p>
+          )}
+        </Button>
+      </div>
     </div>
   )
 }

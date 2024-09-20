@@ -26,8 +26,6 @@ const ChangeProfilePicForm = ({ closeDialog }: ChangeProfilePicFormProps) => {
   const oldAvatar = session.data?.user.image
   const oldAvatarName = oldAvatar?.split("/").pop()
 
-  console.log(`${session.data?.user.id}/${oldAvatarName}`)
-
   const { toast } = useToast()
 
   const [newAvatar, setNewAvatar] = useState<File | null>(null)

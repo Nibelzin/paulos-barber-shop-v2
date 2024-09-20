@@ -10,6 +10,15 @@ declare module "next-auth" {
       image: string
       name: string
       email: string
+      isAdmin: boolean
     }
+  }
+
+  interface User {
+    id: string
+    name?: string | null | undefined
+    email?: string | null | undefined
+    image?: string | null | undefined
+    admin?: boolean | null
   }
 }

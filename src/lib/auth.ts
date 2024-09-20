@@ -43,12 +43,17 @@ export const authOptions: AuthOptions = {
           ...user,
           id: user.id.toString(),
           image: user.avatarImg,
+          admin: user.admin,
         }
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, session, trigger }) {
+    async jwt({ token, session, trigger, user }) {
+      if (user) {
+        token.isAdmin = user.admin
+      }
+
       if (trigger === "update" && session.image) {
         token.picture = session.image
       }
@@ -62,6 +67,7 @@ export const authOptions: AuthOptions = {
       session.user = {
         ...session.user,
         id: token.sub,
+        isAdmin: token.isAdmin,
       } as any
       return session
     },
