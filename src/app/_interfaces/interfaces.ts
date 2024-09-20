@@ -1,8 +1,9 @@
 declare interface User {
+  id: number
   name: string
   email: string
   password: string
-  avatarImg?: string
+  avatarImg?: string | null
   admin: boolean
 }
 

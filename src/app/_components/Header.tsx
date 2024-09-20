@@ -125,7 +125,7 @@ const Header = () => {
               </DropdownMenuItem>
               {session.data.user.isAdmin && (
                 <DropdownMenuItem className="gap-2" asChild>
-                  <Link href="/profile">
+                  <Link href="/admin">
                     <FaGears />
                     <p className="font-bold">Admin</p>
                   </Link>
