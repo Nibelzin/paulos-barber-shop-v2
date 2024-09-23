@@ -27,10 +27,21 @@ const ChangeNameEmailFormSchema = z.object({
 })
 
 interface ChangeNameEmailFormProps {
-  cancelEdit: Function
+  cancelEdit?: Function
+  updateUserList?: Function
+  userToChange?: {
+    id: number | undefined
+    name: string | undefined
+    email: string | undefined
+    currUser: boolean
+  }
 }
 
-const ChangeNameEmailForm = ({ cancelEdit }: ChangeNameEmailFormProps) => {
+const ChangeNameEmailForm = ({
+  cancelEdit,
+  userToChange,
+  updateUserList,
+}: ChangeNameEmailFormProps) => {
   const session = useSession()
 
   const { toast } = useToast()
@@ -38,16 +49,23 @@ const ChangeNameEmailForm = ({ cancelEdit }: ChangeNameEmailFormProps) => {
   const [loading, setLoading] = useState(false)
   const [enableSave, setEnableSave] = useState(false)
 
-  const defaultUsername = session.data?.user.name
-  const defaultEmail = session.data?.user.email
+  let defaultUsername = session.data?.user.name
+  let defaultEmail = session.data?.user.email
+  let id: number | undefined = parseInt(session.data?.user.id!)
+
+  if (userToChange) {
+    defaultUsername = userToChange.name
+    defaultEmail = userToChange.email
+    id = userToChange.id
+  }
 
   const changeNameEmailForm = useForm<
     z.infer<typeof ChangeNameEmailFormSchema>
   >({
     resolver: zodResolver(ChangeNameEmailFormSchema),
     defaultValues: {
-      username: `${session.data?.user.name}`,
-      email: `${session.data?.user.email}`,
+      username: `${defaultUsername}`,
+      email: `${defaultEmail}`,
     },
   })
 
@@ -56,7 +74,6 @@ const ChangeNameEmailForm = ({ cancelEdit }: ChangeNameEmailFormProps) => {
   const inputEmail = watch("email")
 
   useEffect(() => {
-    console.log("teste")
     if (inputUsername !== defaultUsername || inputEmail !== defaultEmail) {
       setEnableSave(true)
     } else {
@@ -67,13 +84,13 @@ const ChangeNameEmailForm = ({ cancelEdit }: ChangeNameEmailFormProps) => {
   async function onSubmit(values: z.infer<typeof ChangeNameEmailFormSchema>) {
     setLoading(true)
 
-    const result = await fetch("/api/update", {
+    const result = await fetch("/api/user", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...values,
         passwordChange: false,
-        id: session.data?.user.id,
+        id: id,
       }),
     })
 
@@ -84,10 +101,15 @@ const ChangeNameEmailForm = ({ cancelEdit }: ChangeNameEmailFormProps) => {
       toast({
         description: "Dados alterados com sucesso",
       })
-      session.update({
-        name: values.username,
-        email: values.email,
-      })
+      if (!userToChange || userToChange.currUser === true) {
+        session.update({
+          name: values.username,
+          email: values.email,
+        })
+      }
+      if (updateUserList) {
+        updateUserList()
+      }
     } else {
       setLoading(false)
       toast({
@@ -133,13 +155,15 @@ const ChangeNameEmailForm = ({ cancelEdit }: ChangeNameEmailFormProps) => {
             <p>Salvar</p>
           )}
         </Button>
-        <Button
-          onClick={() => cancelEdit()}
-          className="w-full"
-          variant="outline"
-        >
-          Cancelar
-        </Button>
+        {cancelEdit && (
+          <Button
+            onClick={() => cancelEdit && cancelEdit()}
+            className="w-full"
+            variant="outline"
+          >
+            Cancelar
+          </Button>
+        )}
       </form>
     </Form>
   )

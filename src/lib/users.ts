@@ -11,3 +11,13 @@ export const getUsers = async (page: number, itemsPerPage: number = 10) => {
     take: itemsPerPage,
   })
 }
+
+export const setUserAdmin = async (id: number, setAdmin: boolean) => {
+  const result = await db.user.update({
+    where: { id: id },
+    data: {
+      admin: setAdmin,
+    },
+  })
+  return result
+}

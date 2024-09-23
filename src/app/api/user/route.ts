@@ -84,3 +84,30 @@ export async function PUT(request: NextRequest) {
     )
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  const { userId } = await request.json()
+
+  try {
+    const result = await db.user.delete({
+      where: { id: userId },
+    })
+
+    if (result) {
+      return NextResponse.json(
+        { message: "Usuario excluido com sucesso!" },
+        { status: 200 },
+      )
+    } else {
+      return NextResponse.json(
+        { message: "Erro excluir usuario." },
+        { status: 500 },
+      )
+    }
+  } catch (e: any) {
+    return NextResponse.json(
+      { message: `Erro${e.message ? `: ${e.message}` : "!"}` },
+      { status: 500 },
+    )
+  }
+}
