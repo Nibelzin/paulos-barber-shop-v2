@@ -1,5 +1,13 @@
 "use client"
 import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/app/_components/ui/pagination"
+import {
   Table,
   TableBody,
   TableCell,
@@ -20,10 +28,32 @@ import { FaRegTrashAlt } from "react-icons/fa"
 const Admin = () => {
   const [users, setUsers] = useState<User[]>([])
   const [usersPage, setUsersPage] = useState(1)
+  const [numOfPages, setNumOfPages] = useState(1)
+
+  const numOfPagesElements = []
+  for (let i = 1; i <= numOfPages; i++) {
+    numOfPagesElements.push(
+      <PaginationItem key={i}>
+        <PaginationLink isActive={i === usersPage}>{i}</PaginationLink>
+      </PaginationItem>,
+    )
+  }
 
   const fetchUsers = async () => {
     const fetchedUsers = await getUsers(usersPage)
     setUsers(fetchedUsers)
+  }
+
+  const previousPage = () => {
+    if (usersPage - 1 > 0) {
+      setUsersPage(usersPage - 1)
+    }
+  }
+
+  const nextPage = () => {
+    if (usersPage + 1 <= numOfPages) {
+      setUsersPage(usersPage + 1)
+    }
   }
 
   useEffect(() => {
@@ -31,7 +61,8 @@ const Admin = () => {
   }, [])
 
   useEffect(() => {
-    console.log(users)
+    const numOfPages = Math.ceil(users.length / 10)
+    setNumOfPages(numOfPages)
   }, [users])
 
   return (
@@ -64,6 +95,17 @@ const Admin = () => {
               ))}
             </TableBody>
           </Table>
+          <Pagination>
+            <PaginationContent className="cursor-pointer">
+              <PaginationItem>
+                <PaginationPrevious onClick={previousPage} />
+              </PaginationItem>
+              {numOfPagesElements}
+              <PaginationItem>
+                <PaginationNext onClick={nextPage} />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </TabsContent>
         <TabsContent value="barbers"></TabsContent>
       </Tabs>

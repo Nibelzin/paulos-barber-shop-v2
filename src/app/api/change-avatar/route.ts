@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server"
 
 export async function PUT(request: NextRequest) {
   const { avatarName, userId } = await request.json()
+  const supaBaseProfileStorage =
+    process.env.NEXT_PUBLIC_SUPABASE_PROFILE_STORAGE
 
   try {
     const result = await db.user.update({
@@ -10,7 +12,7 @@ export async function PUT(request: NextRequest) {
         id: parseInt(userId),
       },
       data: {
-        avatarImg: `https://dgaffgowljicqcbkgwsa.supabase.co/storage/v1/object/public/user_profile/${userId}/${avatarName}`,
+        avatarImg: `${supaBaseProfileStorage}${userId}/${avatarName}`,
       },
     })
 

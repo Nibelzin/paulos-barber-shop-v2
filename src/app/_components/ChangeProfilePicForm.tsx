@@ -19,6 +19,8 @@ const ChangeProfilePicForm = ({ closeDialog }: ChangeProfilePicFormProps) => {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   console.log("SUPABASE", supabaseUrl)
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const supabaseProfileStorage =
+    process.env.NEXT_PUBLIC_SUPABASE_PROFILE_STORAGE
   const supabase = createClient(supabaseUrl!, supabaseAnonKey!)
 
   const session = useSession()
@@ -74,7 +76,7 @@ const ChangeProfilePicForm = ({ closeDialog }: ChangeProfilePicFormProps) => {
         })
 
         session.update({
-          image: `https://dgaffgowljicqcbkgwsa.supabase.co/storage/v1/object/public/user_profile/${session.data?.user.id}/${avatarName}`,
+          image: `${supabaseProfileStorage}${session.data?.user.id}/${avatarName}`,
         })
 
         const removeOldAvatar = await supabase.storage

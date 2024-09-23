@@ -20,7 +20,10 @@ model User {
   name      String
   avatarImg String?
   admin     Boolean
-  bookings  Booking[]
+  barber Boolean @default(false)
+  description String?
+  bookings  Booking[] @relation(name: "UserBookings")  
+  barberBookings Booking[] @relation(name: "BarberBookings")  
   accounts  Account[]
   sessions  Session[]
 }
@@ -73,14 +76,6 @@ model Service {
   bookings Booking[]
 }
 
-model Barber {
-  id          Int       @id @default(autoincrement())
-  name        String
-  avatarImg   String?
-  description String
-  bookings    Booking[]
-}
-
 model Booking {
   id        Int      @id @default(autoincrement())
   serviceId Int
@@ -88,6 +83,6 @@ model Booking {
   userId    Int
   date      DateTime
   service   Service  @relation(fields: [serviceId], references: [id])
-  barber    Barber?   @relation(fields: [barberId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  barber    User?   @relation(name: "BarberBookings", fields: [barberId], references: [id])
+  user      User     @relation(name: "UserBookings", fields: [userId], references: [id])
 }

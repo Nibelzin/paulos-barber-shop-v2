@@ -28,6 +28,10 @@ export const authOptions: AuthOptions = {
           where: { email },
         })
 
+        const barber = await db.user.findUnique({
+          where: { email },
+        })
+
         console.log("User found:", user)
 
         if (!user) {

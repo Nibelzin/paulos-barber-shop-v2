@@ -3,5 +3,7 @@
 import { db } from "./prisma"
 
 export const getBarbers = async () => {
-  return db.barber.findMany()
+  return db.user.findMany({
+    where: { barber: true },
+  })
 }
