@@ -6,11 +6,11 @@ interface BarberCardProps {
 
 const BarberCard = ({ barber }: BarberCardProps) => {
   return (
-    <div className="flex min-w-72 flex-col items-center gap-4 rounded-md border border-input bg-white p-6 drop-shadow-md">
+    <div className="flex min-w-72 flex-col items-center gap-4 rounded-md border border-input bg-white p-6 drop-shadow-md dark:bg-neutral-900">
       <Avatar className="h-20 w-20">
         <AvatarImage
           src={`${barber.avatarImg === null || barber.avatarImg === "" ? "/default_profile_pic.jpg" : barber.avatarImg}`}
-          style={{ objectFit: "cover" }}
+          className="object-cover"
         />
       </Avatar>
       <div>

@@ -48,6 +48,7 @@ export const authOptions: AuthOptions = {
           id: user.id.toString(),
           image: user.avatarImg,
           admin: user.admin,
+          barber: user.barber,
         }
       },
     }),
@@ -56,6 +57,7 @@ export const authOptions: AuthOptions = {
     async jwt({ token, session, trigger, user }) {
       if (user) {
         token.isAdmin = user.admin
+        token.isBarber = user.barber
       }
 
       if (trigger === "update" && session.image) {
@@ -65,6 +67,11 @@ export const authOptions: AuthOptions = {
         token.name = session.name
         token.email = session.email
       }
+
+      if (trigger === "update" && session?.isBarber) {
+        token.isBarber = session.isBarber
+      }
+
       return token
     },
     async session({ session, token }) {
@@ -72,6 +79,7 @@ export const authOptions: AuthOptions = {
         ...session.user,
         id: token.sub,
         isAdmin: token.isAdmin,
+        isBarber: token.isBarber,
       } as any
       return session
     },

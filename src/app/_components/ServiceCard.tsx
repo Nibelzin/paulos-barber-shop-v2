@@ -24,7 +24,7 @@ const ServiceCard = ({ service, bookings, barbers }: ServiceCardProps) => {
       <div className="flex justify-between">
         <div>
           <h3 className="text-lg font-bold">{service.name}</h3>
-          <p className="text-xs font-bold text-slate-600">{duration}</p>
+          <p className="text-xs font-bold text-neutral-700">{duration}</p>
         </div>
         <div className="flex flex-col items-end justify-center gap-2">
           <p className="text-lg font-bold">{price}</p>

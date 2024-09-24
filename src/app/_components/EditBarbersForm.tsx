@@ -18,8 +18,10 @@ import {
 import { Button } from "./ui/button"
 import { useToast } from "./hooks/use-toast"
 import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 
 const EditBarbersForm = () => {
+  const session = useSession()
   const router = useRouter()
   const { toast } = useToast()
 
@@ -53,6 +55,9 @@ const EditBarbersForm = () => {
     toast({
       description: `${name} agora é um barbeiro!`,
     })
+    session.update({
+      isBarber: true,
+    })
     fetchBarbersAndUsers()
     router.refresh()
   }
@@ -63,6 +68,9 @@ const EditBarbersForm = () => {
     }
     toast({
       description: `${name} agora é um usuario comum!`,
+    })
+    session.update({
+      isBarber: false,
     })
     fetchBarbersAndUsers()
     handleBarberToUserDialogClose()

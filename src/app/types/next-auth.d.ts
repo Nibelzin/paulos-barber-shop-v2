@@ -11,6 +11,7 @@ declare module "next-auth" {
       name: string
       email: string
       isAdmin: boolean
+      isBarber: boolean
     }
   }
 
@@ -20,5 +21,6 @@ declare module "next-auth" {
     email?: string | null | undefined
     image?: string | null | undefined
     admin?: boolean | null
+    barber?: boolean | null
   }
 }

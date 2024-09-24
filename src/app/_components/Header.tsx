@@ -27,8 +27,20 @@ import {
 } from "./ui/dropdown-menu"
 import { signOut, useSession } from "next-auth/react"
 import { Dialog, DialogContent } from "./ui/dialog"
+import { Switch } from "./ui/switch"
+import { useTheme } from "next-themes"
+import { Label } from "./ui/label"
 
 const Header = () => {
+  const { setTheme, theme } = useTheme()
+
+  const handleThemeChange = () => {
+    if (theme === "light") {
+      setTheme("dark")
+    } else {
+      setTheme("light")
+    }
+  }
   const session = useSession()
   const router = useRouter()
 
@@ -62,7 +74,7 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 z-50 w-full">
-      <div className="relative z-50 flex h-16 items-center justify-between border-b bg-white px-8 py-3 md:px-32 xl:px-64">
+      <div className="relative z-50 flex h-16 items-center justify-between border-b bg-white px-8 py-3 dark:bg-neutral-900 md:px-32 xl:px-64">
         <Button
           className="z-50 md:hidden"
           variant="outline"
@@ -119,10 +131,17 @@ const Header = () => {
                   <p className="font-bold">Meu Perfil</p>
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2">
+              <div className="flex items-center gap-2 rounded-sm p-2 hover:bg-accent">
                 <FaMoon />
-                <p className="font-bold">Dark Mode</p>
-              </DropdownMenuItem>
+                <Label className="font-bold" htmlFor="dark-mode">
+                  Dark Mode
+                </Label>
+                <Switch
+                  onClick={handleThemeChange}
+                  checked={theme === "dark"}
+                  id="dark-mode"
+                />
+              </div>
               {session.data.user.isAdmin && (
                 <DropdownMenuItem className="gap-2" asChild>
                   <Link href="/admin">
@@ -148,16 +167,23 @@ const Header = () => {
                 <Button
                   size="icon"
                   variant="outline"
-                  className="border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                  className="border-none focus-visible:ring-0 focus-visible:ring-offset-0 dark:bg-neutral-900 dark:hover:bg-accent"
                 >
                   <HiOutlineDotsVertical size={24} />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent sideOffset={18}>
-                <DropdownMenuItem className="gap-2">
+                <div className="flex items-center gap-2 rounded-sm p-2 hover:bg-accent">
                   <FaMoon />
-                  <p className="font-bold">Dark Mode</p>
-                </DropdownMenuItem>
+                  <Label className="font-bold" htmlFor="dark-mode">
+                    Dark Mode
+                  </Label>
+                  <Switch
+                    onClick={handleThemeChange}
+                    checked={theme === "dark"}
+                    id="dark-mode"
+                  />
+                </div>
               </DropdownMenuContent>
             </DropdownMenu>
             <Button variant="outline" className="flex gap-2" size="sm" asChild>
@@ -171,10 +197,10 @@ const Header = () => {
       </div>
       <div
         ref={ref}
-        className={`absolute z-10 w-full border-b bg-white px-8 py-3 transition-all ${isNavbarVisible ? "top-16" : "-top-24"} md:hidden`}
+        className={`absolute z-10 w-full border-b bg-white px-8 py-3 transition-all dark:bg-neutral-900 ${isNavbarVisible ? "top-16" : "-top-24"} md:hidden`}
       >
         <Link
-          className="flex items-center gap-2 rounded-md p-3 hover:bg-slate-100"
+          className="flex items-center gap-2 rounded-md p-3 hover:bg-accent"
           href="/"
           onClick={handleMenuHamburguerClick}
         >
@@ -183,7 +209,7 @@ const Header = () => {
         </Link>
         <hr className="my-3" />
         <Link
-          className="flex items-center gap-2 rounded-md p-3 hover:bg-slate-100"
+          className="flex items-center gap-2 rounded-md p-3 hover:bg-accent"
           href="/bookings"
           onClick={handleMenuHamburguerClick}
         >

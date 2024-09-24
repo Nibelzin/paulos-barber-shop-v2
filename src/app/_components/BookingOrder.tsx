@@ -44,7 +44,7 @@ const BookingOrder = ({
       <div className="flex justify-between">
         <div>
           <h2 className="mb-1 text-lg font-bold">{service.name}</h2>
-          <p className="text-xs font-bold text-slate-600">
+          <p className="text-xs font-bold text-neutral-600">
             {formattedDuration}
           </p>
         </div>
@@ -54,7 +54,7 @@ const BookingOrder = ({
           ) : (
             <p>Sel. Horário</p>
           )}
-          <p className="text-sm font-bold text-slate-700">{formattedDate}</p>
+          <p className="text-sm font-bold text-neutral-700">{formattedDate}</p>
         </div>
       </div>
       <hr />

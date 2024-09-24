@@ -82,7 +82,7 @@ const BookingCard = ({ page, booking }: BookingCardProps) => {
 
   return (
     <div
-      className={`${page === "home" ? "w-96 cursor-pointer" : "max-w-full"} max-w-96 space-y-4 rounded-md border bg-white p-4 drop-shadow-md`}
+      className={`${page === "home" ? "w-96 cursor-pointer" : "max-w-full"} max-w-96 space-y-4 rounded-md border bg-white p-4 drop-shadow-md dark:bg-neutral-900`}
       onClick={handleBookingClick}
     >
       <div className="flex justify-between">
@@ -102,7 +102,7 @@ const BookingCard = ({ page, booking }: BookingCardProps) => {
         </div>
         <div className="flex flex-col items-end space-y-1">
           <p className="text-3xl font-bold">{getHours}</p>
-          <p className="text-sm font-bold text-slate-700">{getDate}</p>
+          <p className="text-sm font-bold text-neutral-700">{getDate}</p>
         </div>
       </div>
       <hr />
@@ -117,6 +117,7 @@ const BookingCard = ({ page, booking }: BookingCardProps) => {
                 <Avatar className="h-6 w-6">
                   <AvatarImage
                     src={`${booking.barber.avatarImg === null || booking.barber.avatarImg === "" ? "/default_profile_pic.jpg" : booking.barber.avatarImg}`}
+                    className="object-cover"
                   />
                 </Avatar>
                 <p className="text-sm font-bold">{booking.barber.name}</p>

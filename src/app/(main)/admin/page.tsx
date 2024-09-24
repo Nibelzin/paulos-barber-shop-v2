@@ -165,7 +165,7 @@ const Admin = () => {
   }, [users])
 
   return (
-    <div className="bg-man relative h-full bg-slate-50 px-8 pb-16 pt-32 md:px-32 xl:px-64">
+    <div className="bg-man relative h-full bg-slate-50 px-8 pb-16 pt-32 dark:bg-zinc-950 md:px-32 xl:px-64">
       <Tabs defaultValue="users">
         <TabsList>
           <TabsTrigger value="users">Usuários</TabsTrigger>
@@ -248,6 +248,18 @@ const Admin = () => {
                               </div>
                             </DialogContent>
                           </Dialog>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            disabled={session.data?.user.email === user.email}
+                            onClick={() => {
+                              if (session.data?.user.email !== user.email) {
+                                handleDeleteDialogOpen(user.id)
+                              }
+                            }}
+                          >
+                            <FaRegTrashAlt color="red" size={15} />
+                          </Button>
                           <Dialog
                             open={openDeleteDialogUserId === user.id}
                             onOpenChange={() => {
@@ -258,15 +270,6 @@ const Admin = () => {
                               }
                             }}
                           >
-                            <DialogTrigger>
-                              <Button
-                                size="icon"
-                                variant="outline"
-                                onClick={() => handleDeleteDialogOpen(user.id)}
-                              >
-                                <FaRegTrashAlt color="red" size={15} />
-                              </Button>
-                            </DialogTrigger>
                             <DialogContent>
                               <DialogTitle>Tem certeza ?</DialogTitle>
                               <DialogDescription>

@@ -34,7 +34,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="bg-man relative flex h-full items-center justify-center bg-slate-50 px-8 pb-16 pt-32 md:px-32 xl:px-64">
+    <div className="bg-man relative flex h-full items-center justify-center bg-slate-50 px-8 pb-16 pt-32 dark:bg-zinc-950 md:px-32 xl:px-64">
       <div className="flex w-96 flex-col items-center">
         <Dialog open={openDialog} onOpenChange={handleDialogChange}>
           <DialogTrigger>
