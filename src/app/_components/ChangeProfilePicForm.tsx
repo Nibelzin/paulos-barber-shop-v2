@@ -8,7 +8,6 @@ import { useSession } from "next-auth/react"
 import { useState } from "react"
 import { createClient } from "@supabase/supabase-js"
 import { v4 as uuidv4 } from "uuid"
-import Image from "next/image"
 import { useToast } from "./hooks/use-toast"
 import LoadingIcon from "./LoadingIcon"
 

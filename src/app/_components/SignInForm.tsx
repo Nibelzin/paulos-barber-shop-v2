@@ -14,7 +14,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import Image from "next/image"
 import LoadingIcon from "./LoadingIcon"
 
 const signInFormSchema = z.object({

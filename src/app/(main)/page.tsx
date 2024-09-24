@@ -1,11 +1,4 @@
 import Image from "next/image"
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "../_components/ui/carousel"
 import BarberCard from "../_components/BarberCard"
 import ServiceCard from "../_components/ServiceCard"
 import Map from "../_components/Map"

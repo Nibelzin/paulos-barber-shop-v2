@@ -14,7 +14,6 @@ import { Input } from "./ui/input"
 import { Button } from "./ui/button"
 import { useEffect, useState } from "react"
 import { useToast } from "./hooks/use-toast"
-import Image from "next/image"
 import LoadingIcon from "./LoadingIcon"
 
 const ChangeNameEmailFormSchema = z.object({

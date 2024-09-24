@@ -38,7 +38,6 @@ import {
 import { getBarbers } from "@/lib/barbers"
 import { getUsers, setUserAdmin } from "@/lib/users"
 import { useSession } from "next-auth/react"
-import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa"

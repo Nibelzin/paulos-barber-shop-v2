@@ -13,7 +13,6 @@ import { Input } from "./ui/input"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
-import Image from "next/image"
 import LoadingIcon from "./LoadingIcon"
 
 const signUpFormSchema = z

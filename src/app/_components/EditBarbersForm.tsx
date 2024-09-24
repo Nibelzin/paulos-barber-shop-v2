@@ -1,5 +1,5 @@
 import { getBarbers, setBarberToUser } from "@/lib/barbers"
-import { getAllUsers, getUsers, setUserToBarber } from "@/lib/users"
+import { getAllUsers, setUserToBarber } from "@/lib/users"
 import { useEffect, useState } from "react"
 import {
   Table,

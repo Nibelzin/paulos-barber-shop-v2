@@ -14,7 +14,6 @@ import { Button } from "./ui/button"
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import { useToast } from "./hooks/use-toast"
-import Image from "next/image"
 import LoadingIcon from "./LoadingIcon"
 
 const ChangePasswordFormSchema = z
@@ -49,7 +48,7 @@ const ChangePasswordForm = ({ cancelEdit }: ChangePasswordFormProps) => {
     setLoading(true)
     const { password } = values
 
-    const result = await fetch("/api/update", {
+    const result = await fetch("/api/user", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

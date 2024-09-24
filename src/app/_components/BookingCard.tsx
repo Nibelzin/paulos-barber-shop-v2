@@ -21,7 +21,6 @@ import {
   DialogTitle,
 } from "./ui/dialog"
 import { useToast } from "./hooks/use-toast"
-import Image from "next/image"
 import LoadingIcon from "./LoadingIcon"
 
 interface BookingCardProps {
