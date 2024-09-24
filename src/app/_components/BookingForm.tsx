@@ -12,6 +12,7 @@ import { useToast } from "./hooks/use-toast"
 import { useRouter } from "next/navigation"
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6"
 import LoadingIcon from "./LoadingIcon"
+import { ptBR } from "date-fns/locale"
 
 interface BookingFormProps {
   service: Service
@@ -194,6 +195,7 @@ const BookingForm = ({
     <div className="w-full space-y-6">
       <div className="flex items-center justify-center">
         <Calendar
+          locale={ptBR}
           fromDate={new Date()}
           mode="single"
           selected={date}
