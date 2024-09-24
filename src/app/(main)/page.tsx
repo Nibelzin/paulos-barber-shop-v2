@@ -95,7 +95,7 @@ export default async function Home() {
         </div>
         <div className="mb-16 space-y-4">
           <h2 className="text-2xl font-bold">Membros da equipe</h2>
-          <div className="flex gap-4 overflow-x-scroll">
+          <div className="flex gap-4 overflow-x-auto">
             {barbers.map((barber) => (
               <BarberCard key={barber.id} barber={barber} />
             ))}
