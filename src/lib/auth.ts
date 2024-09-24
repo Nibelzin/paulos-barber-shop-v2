@@ -24,15 +24,11 @@ export const authOptions: AuthOptions = {
           throw new Error("Por favor, insira email e senha.")
         }
 
+        const normalizedEmail = email.toLowerCase()
+
         const user = await db.user.findUnique({
-          where: { email },
+          where: { email: normalizedEmail },
         })
-
-        const barber = await db.user.findUnique({
-          where: { email },
-        })
-
-        console.log("User found:", user)
 
         if (!user) {
           throw new Error("Email ou senha inválidos.")

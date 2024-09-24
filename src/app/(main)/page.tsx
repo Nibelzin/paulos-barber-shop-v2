@@ -14,22 +14,7 @@ import BookingCard from "../_components/BookingCard"
 import { getBookings, getNextBookings } from "@/lib/bookings"
 import { getComboServices, getSoloServices } from "@/lib/services"
 import { getBarbers } from "@/lib/barbers"
-import { useTheme } from "next-themes"
-
-const carrouselImages = [
-  {
-    id: 1,
-    img: "/carrousel_1.jpg",
-  },
-  {
-    id: 2,
-    img: "/carrousel_2.jpg",
-  },
-  {
-    id: 3,
-    img: "/carrousel_3.jpg",
-  },
-]
+import BarberShopCarousel from "../_components/BarberShopCarousel"
 
 export default async function Home() {
   const nextBookings = await getNextBookings()
@@ -45,30 +30,7 @@ export default async function Home() {
       <div className="z-10">
         <div className="mb-16 flex w-full flex-col items-center gap-16 md:flex-row">
           <div className="mt-16 flex">
-            <Carousel
-              opts={{
-                loop: true,
-              }}
-            >
-              <CarouselContent className="max-w-[700px]">
-                {carrouselImages.map((image) => (
-                  <CarouselItem key={image.id} className="flex justify-center">
-                    <Image
-                      src={image.img}
-                      width={700}
-                      height={600}
-                      className="rounded-lg"
-                      style={{
-                        objectFit: "contain",
-                      }}
-                      alt="carrousel 1"
-                    />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
-            </Carousel>
+            <BarberShopCarousel />
           </div>
           <div className="w-full space-y-2 text-left md:w-96">
             <Image

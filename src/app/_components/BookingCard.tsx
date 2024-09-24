@@ -22,6 +22,7 @@ import {
 } from "./ui/dialog"
 import { useToast } from "./hooks/use-toast"
 import Image from "next/image"
+import LoadingIcon from "./LoadingIcon"
 
 interface BookingCardProps {
   page?: "home" | "booking"
@@ -87,9 +88,7 @@ const BookingCard = ({ page, booking }: BookingCardProps) => {
     >
       <div className="flex justify-between">
         <div className="w-72">
-          <h2 className="mb-1 truncate text-lg font-bold">
-            {booking.service.name}
-          </h2>
+          <h2 className="mb-1 text-lg font-bold">{booking.service.name}</h2>
           {isPast ? (
             <div className="w-fit rounded-full border border-blue-300 bg-blue-100 px-2 py-1">
               <p className="text-xs font-bold text-blue-700">Concluido</p>
@@ -158,16 +157,7 @@ const BookingCard = ({ page, booking }: BookingCardProps) => {
               className="w-full"
               variant="destructive"
             >
-              {loading ? (
-                <Image
-                  src="/loading.svg"
-                  width={20}
-                  height={20}
-                  alt="loading"
-                />
-              ) : (
-                <p>Confirmar</p>
-              )}
+              {loading ? <LoadingIcon /> : <p>Confirmar</p>}
             </Button>
           </DialogFooter>
         </DialogContent>

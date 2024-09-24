@@ -2,6 +2,7 @@
 import ChangeNameEmailForm from "@/app/_components/ChangeNameEmailForm"
 import EditBarbersForm from "@/app/_components/EditBarbersForm"
 import { useToast } from "@/app/_components/hooks/use-toast"
+import LoadingIcon from "@/app/_components/LoadingIcon"
 import { Button } from "@/app/_components/ui/button"
 import { Checkbox } from "@/app/_components/ui/checkbox"
 import {
@@ -283,16 +284,7 @@ const Admin = () => {
                                     variant="destructive"
                                     onClick={() => handleDeleteUser(user.id)}
                                   >
-                                    {loading ? (
-                                      <Image
-                                        src="/loading.svg"
-                                        width={20}
-                                        height={20}
-                                        alt="loading"
-                                      />
-                                    ) : (
-                                      <p>Excluir</p>
-                                    )}
+                                    {loading ? <LoadingIcon /> : <p>Excluir</p>}
                                   </Button>
                                   <Button
                                     className="w-full"
@@ -434,16 +426,7 @@ const Admin = () => {
                                     variant="destructive"
                                     onClick={() => handleDeleteUser(user.id)}
                                   >
-                                    {loading ? (
-                                      <Image
-                                        src="/loading.svg"
-                                        width={20}
-                                        height={20}
-                                        alt="loading"
-                                      />
-                                    ) : (
-                                      <p>Excluir</p>
-                                    )}
+                                    {loading ? <LoadingIcon /> : <p>Excluir</p>}
                                   </Button>
                                   <Button
                                     className="w-full"

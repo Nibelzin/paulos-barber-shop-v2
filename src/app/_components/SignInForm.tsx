@@ -15,6 +15,7 @@ import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import Image from "next/image"
+import LoadingIcon from "./LoadingIcon"
 
 const signInFormSchema = z.object({
   email: z.string().email({ message: "Email inválido" }),
@@ -87,11 +88,7 @@ const SignInForm = () => {
           />
         </div>
         <Button type="submit" className="w-full">
-          {loading ? (
-            <Image src="/loading.svg" width={20} height={20} alt="loading" />
-          ) : (
-            <p>Entrar</p>
-          )}
+          {loading ? <LoadingIcon /> : <p>Entrar</p>}
         </Button>
       </form>
     </Form>

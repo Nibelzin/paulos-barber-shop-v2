@@ -12,6 +12,7 @@ import { useToast } from "./hooks/use-toast"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6"
+import LoadingIcon from "./LoadingIcon"
 
 interface BookingFormProps {
   service: Service
@@ -263,11 +264,7 @@ const BookingForm = ({
           onClick={makeABooking}
           disabled={selectedHour ? false : true}
         >
-          {loading ? (
-            <Image src="/loading.svg" width={20} height={20} alt="loading" />
-          ) : (
-            <p>Salvar</p>
-          )}
+          {loading ? <LoadingIcon /> : <p>Salvar</p>}
         </Button>
       </div>
     </div>

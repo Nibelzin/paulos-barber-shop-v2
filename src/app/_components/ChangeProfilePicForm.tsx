@@ -10,6 +10,7 @@ import { createClient } from "@supabase/supabase-js"
 import { v4 as uuidv4 } from "uuid"
 import Image from "next/image"
 import { useToast } from "./hooks/use-toast"
+import LoadingIcon from "./LoadingIcon"
 
 interface ChangeProfilePicFormProps {
   closeDialog: Function
@@ -131,11 +132,7 @@ const ChangeProfilePicForm = ({ closeDialog }: ChangeProfilePicFormProps) => {
       </div>
       <div className="flex flex-col space-y-2">
         <Button onClick={handleUpload}>
-          {loading ? (
-            <Image src="/loading.svg" width={20} height={20} alt="loading" />
-          ) : (
-            <p>Salvar</p>
-          )}
+          {loading ? <LoadingIcon /> : <p>Salvar</p>}
         </Button>
         <Button variant="outline" onClick={() => closeDialog()}>
           Cancelar

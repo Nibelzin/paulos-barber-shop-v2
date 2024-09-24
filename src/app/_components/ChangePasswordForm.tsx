@@ -15,6 +15,7 @@ import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import { useToast } from "./hooks/use-toast"
 import Image from "next/image"
+import LoadingIcon from "./LoadingIcon"
 
 const ChangePasswordFormSchema = z
   .object({
@@ -126,11 +127,7 @@ const ChangePasswordForm = ({ cancelEdit }: ChangePasswordFormProps) => {
           )}
         />
         <Button className="mb-4 w-full" disabled={!enableSave}>
-          {loading ? (
-            <Image src="/loading.svg" width={20} height={20} alt="loading" />
-          ) : (
-            <p>Alterar Senha</p>
-          )}
+          {loading ? <LoadingIcon /> : <p>Alterar Senha</p>}
         </Button>
         <Button
           onClick={() => cancelEdit()}

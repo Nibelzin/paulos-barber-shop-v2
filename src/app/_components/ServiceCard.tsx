@@ -34,7 +34,7 @@ const ServiceCard = ({ service, bookings, barbers }: ServiceCardProps) => {
             </DialogTrigger>
             <DialogContent className="h-[620px] overflow-y-auto md:h-fit">
               <DialogTitle className="text-xl">Agendar Serviço</DialogTitle>
-              {bookings && barbers && (
+              {open && bookings && barbers && (
                 <BookingForm
                   service={service}
                   bookings={bookings}

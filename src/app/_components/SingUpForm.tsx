@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
 import Image from "next/image"
+import LoadingIcon from "./LoadingIcon"
 
 const signUpFormSchema = z
   .object({
@@ -57,7 +58,7 @@ const SignUpForm = ({ openSuccessDialog }: SignUpFormProps) => {
     const hashPassword = await bcrypt.hash(values.password, 10)
     const user: User = {
       name: values.username,
-      email: values.email,
+      email: values.email.toLowerCase(),
       password: hashPassword,
       admin: false,
     }
@@ -142,11 +143,7 @@ const SignUpForm = ({ openSuccessDialog }: SignUpFormProps) => {
           />
         </div>
         <Button type="submit" className="w-full">
-          {loading ? (
-            <Image src="/loading.svg" width={20} height={20} alt="loading" />
-          ) : (
-            <p>Registrar</p>
-          )}
+          {loading ? <LoadingIcon /> : <p>Registrar</p>}
         </Button>
       </form>
     </Form>
