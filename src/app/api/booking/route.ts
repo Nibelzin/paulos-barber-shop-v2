@@ -2,6 +2,8 @@ import { db } from "@/lib/prisma"
 import { NextRequest, NextResponse } from "next/server"
 import dayjs from "dayjs"
 import utc from "dayjs/plugin/utc"
+import timezone from "dayjs/plugin/timezone"
+dayjs.extend(timezone)
 
 dayjs.extend(utc)
 
@@ -35,10 +37,17 @@ export async function DELETE(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const { serviceId, barberId, userId, date, hour: time } = await request.json()
+  const {
+    serviceId,
+    barberId,
+    userId,
+    date,
+    hour: time,
+    timeZone,
+  } = await request.json()
 
   const [hour, minute] = time.split(":").map(Number)
-  const localDateHour = dayjs(date).hour(hour).minute(minute)
+  const localDateHour = dayjs(date).tz(timeZone).hour(hour).minute(minute)
 
   const dateHourUtc = localDateHour.utc().toDate()
 

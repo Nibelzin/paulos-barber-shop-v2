@@ -1,12 +1,8 @@
 "use client"
 
-import {
-  generateTimeSlots,
-  getFormattedDuration,
-  getFormettedPrice,
-} from "@/lib/utils"
+import { generateTimeSlots, getFormettedPrice } from "@/lib/utils"
 import { Calendar } from "./ui/calendar"
-import { createRef, useEffect, useRef, useState } from "react"
+import { createRef, useEffect, useState } from "react"
 import dayjs from "dayjs"
 import { Badge } from "./ui/badge"
 import BookingOrder from "./BookingOrder"
@@ -159,12 +155,15 @@ const BookingForm = ({
       barberId = selectedBarber.id
     }
 
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
     const booking = {
       serviceId: service.id,
       barberId: barberId,
       userId: parseInt(session.data?.user.id),
       date: date,
       hour: selectedHour,
+      timeZone: timeZone,
     }
 
     const result = await fetch("/api/booking", {
