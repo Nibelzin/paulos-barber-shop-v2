@@ -107,7 +107,7 @@ const Header = () => {
         </div>
         {session.status === "authenticated" ? (
           <DropdownMenu>
-            <DropdownMenuTrigger className="" asChild>
+            <DropdownMenuTrigger asChild>
               <div className="group/configs z-50 flex cursor-pointer items-center gap-2">
                 <FaChevronDown
                   size={10}
