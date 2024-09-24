@@ -1,5 +1,6 @@
 "use client"
 import ChangeNameEmailForm from "@/app/_components/ChangeNameEmailForm"
+import EditBarbersForm from "@/app/_components/EditBarbersForm"
 import { useToast } from "@/app/_components/hooks/use-toast"
 import { Button } from "@/app/_components/ui/button"
 import { Checkbox } from "@/app/_components/ui/checkbox"
@@ -33,6 +34,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/app/_components/ui/tabs"
+import { getBarbers } from "@/lib/barbers"
 import { getUsers, setUserAdmin } from "@/lib/users"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
@@ -46,21 +48,28 @@ const Admin = () => {
   const { toast } = useToast()
 
   const [users, setUsers] = useState<User[]>([])
+  const [barbers, setBarbers] = useState<User[]>([])
+
   const [loading, setLoading] = useState(false)
   const [usersPage, setUsersPage] = useState(1)
   const [numOfPages, setNumOfPages] = useState(1)
+
   const [openEditDialogUserId, setOpenEditDialogUserId] = useState<
     number | undefined
   >(undefined)
+
   const [openDeleteDialogUserId, setOpenDeleteDialogUserId] = useState<
     number | undefined
   >(undefined)
+
+  const [openEditBarbersDialog, setOpenEditBarbersDialog] = useState(false)
 
   const handleEditDialogOpen = (userId: number | undefined) => {
     setOpenEditDialogUserId(userId)
   }
 
   const handleEditDialogClose = () => {
+    fetchBarbers()
     fetchUsers()
     setOpenEditDialogUserId(undefined)
   }
@@ -70,6 +79,7 @@ const Admin = () => {
   }
 
   const handleDeleteDialogClose = () => {
+    fetchBarbers()
     fetchUsers()
     setOpenDeleteDialogUserId(undefined)
   }
@@ -88,6 +98,11 @@ const Admin = () => {
     setUsers(fetchedUsers)
   }
 
+  const fetchBarbers = async () => {
+    const fetchedBarbers = await getBarbers()
+    setBarbers(fetchedBarbers)
+  }
+
   const handleAdminCheckButtonClick = async (
     setAdmin: boolean,
     id?: number,
@@ -95,6 +110,7 @@ const Admin = () => {
     if (id) {
       await setUserAdmin(id, setAdmin)
     }
+    fetchBarbers()
     fetchUsers()
     return
   }
@@ -140,6 +156,7 @@ const Admin = () => {
 
   useEffect(() => {
     fetchUsers()
+    fetchBarbers()
   }, [])
 
   useEffect(() => {
@@ -305,7 +322,162 @@ const Admin = () => {
             </PaginationContent>
           </Pagination>
         </TabsContent>
-        <TabsContent value="barbers"></TabsContent>
+        <TabsContent value="barbers">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nome</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Admin?</TableHead>
+                <TableHead>Ação</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {barbers.map((user: User) => {
+                const currUser = user.email === session.data?.user.email
+
+                const userToChange = {
+                  id: user.id,
+                  email: user.email,
+                  name: user.name,
+                  currUser,
+                }
+
+                return (
+                  <>
+                    <TableRow key={user.id}>
+                      <TableCell>{user.name}</TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell>
+                        <Checkbox
+                          checked={user.admin}
+                          disabled={
+                            user.email === session.data?.user.email
+                              ? true
+                              : false
+                          }
+                          onClick={() =>
+                            handleAdminCheckButtonClick(!user.admin, user.id)
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Dialog
+                            open={openEditDialogUserId === user.id}
+                            onOpenChange={() => {
+                              if (openEditDialogUserId !== undefined) {
+                                setOpenEditDialogUserId(undefined)
+                              } else {
+                                setOpenEditDialogUserId(user.id)
+                              }
+                            }}
+                          >
+                            <DialogTrigger asChild>
+                              <Button
+                                size="icon"
+                                variant="outline"
+                                onClick={() => handleEditDialogOpen(user.id)}
+                              >
+                                <FaRegEdit color="" size={15} />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogTitle>Editando {user.email}</DialogTitle>
+                              <div>
+                                <ChangeNameEmailForm
+                                  userToChange={userToChange}
+                                  updateUserList={handleEditDialogClose}
+                                />
+                                <Button
+                                  className="w-full"
+                                  variant="outline"
+                                  onClick={handleEditDialogClose}
+                                >
+                                  Cancelar
+                                </Button>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+                          <Dialog
+                            open={openDeleteDialogUserId === user.id}
+                            onOpenChange={() => {
+                              if (openDeleteDialogUserId !== undefined) {
+                                setOpenDeleteDialogUserId(undefined)
+                              } else {
+                                setOpenDeleteDialogUserId(user.id)
+                              }
+                            }}
+                          >
+                            <DialogTrigger>
+                              <Button
+                                size="icon"
+                                variant="outline"
+                                onClick={() => handleDeleteDialogOpen(user.id)}
+                              >
+                                <FaRegTrashAlt color="red" size={15} />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogTitle>Tem certeza ?</DialogTitle>
+                              <DialogDescription>
+                                Você esta prestes a excluir o usuario{" "}
+                                {user.email}, esta acão não pode ser desfeita.
+                              </DialogDescription>
+                              <DialogFooter>
+                                <div className="flex w-full flex-col">
+                                  <Button
+                                    className="mb-4 w-full"
+                                    variant="destructive"
+                                    onClick={() => handleDeleteUser(user.id)}
+                                  >
+                                    {loading ? (
+                                      <Image
+                                        src="/loading.svg"
+                                        width={20}
+                                        height={20}
+                                        alt="loading"
+                                      />
+                                    ) : (
+                                      <p>Excluir</p>
+                                    )}
+                                  </Button>
+                                  <Button
+                                    className="w-full"
+                                    variant="outline"
+                                    onClick={handleDeleteDialogClose}
+                                  >
+                                    Cancelar
+                                  </Button>
+                                </div>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  </>
+                )
+              })}
+            </TableBody>
+          </Table>
+          <div className="flex w-full items-center justify-center">
+            <p
+              className="cursor-pointer text-blue-500 underline"
+              onClick={() => setOpenEditBarbersDialog(true)}
+            >
+              Adicionar ou remover barbeiros
+            </p>
+            <Dialog
+              open={openEditBarbersDialog}
+              onOpenChange={setOpenEditBarbersDialog}
+            >
+              <DialogContent className="max-w-[900px]">
+                <EditBarbersForm />
+              </DialogContent>
+            </Dialog>
+          </div>
+        </TabsContent>
       </Tabs>
     </div>
   )
