@@ -55,7 +55,14 @@ const Header = () => {
     router.push("/bookings")
   }
 
-  const handleMenuHamburguerClick = () => {
+  const handleMenuHamburguerClick = (page?: string) => {
+    if (page) {
+      if (page === "/bookings" && session.status === "unauthenticated") {
+        return setOpenLoginPopUp(true)
+      }
+      router.push(page)
+    }
+
     setNavbarVisible(!isNavbarVisible)
   }
 
@@ -79,7 +86,7 @@ const Header = () => {
           className="z-50 md:hidden"
           variant="outline"
           size="icon"
-          onClick={handleMenuHamburguerClick}
+          onClick={() => handleMenuHamburguerClick()}
         >
           <FaBars size={20} />
         </Button>
@@ -199,23 +206,21 @@ const Header = () => {
         ref={ref}
         className={`absolute z-10 w-full border-b bg-white px-8 py-3 transition-all dark:bg-neutral-900 ${isNavbarVisible ? "top-16" : "-top-24"} md:hidden`}
       >
-        <Link
-          className="flex items-center gap-2 rounded-md p-3 hover:bg-accent"
-          href="/"
-          onClick={handleMenuHamburguerClick}
+        <div
+          className="flex cursor-pointer items-center gap-2 rounded-md p-3 hover:bg-accent"
+          onClick={() => handleMenuHamburguerClick("/")}
         >
           <FaHome size={18} />
           <p className="font-bold">Home</p>
-        </Link>
+        </div>
         <hr className="my-3" />
-        <Link
-          className="flex items-center gap-2 rounded-md p-3 hover:bg-accent"
-          href="/bookings"
-          onClick={handleMenuHamburguerClick}
+        <div
+          className="flex cursor-pointer items-center gap-2 rounded-md p-3 hover:bg-accent"
+          onClick={() => handleMenuHamburguerClick("/bookings")}
         >
           <FaCalendarAlt size={18} />
           <p className="font-bold">Agendamentos</p>
-        </Link>
+        </div>
       </div>
       <Dialog open={openLoginPopUp} onOpenChange={setOpenLoginPopUp}>
         <DialogContent className="w-96 rounded-lg">
