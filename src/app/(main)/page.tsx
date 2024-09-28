@@ -170,7 +170,7 @@ export default async function Home() {
               <Map />
             </div>
             <h2 className="text-xl font-bold">
-              Av. Ficticia Por Razões, 1345, 01234-10
+              Av. Ficticia Por Razões, 1245, 01234-10
             </h2>
             <h2 className="text-lg font-bold">São Paulo - SP</h2>
           </div>
